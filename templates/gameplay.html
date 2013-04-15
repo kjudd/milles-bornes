@@ -1,0 +1,21 @@
+<!-- DRAW FORM
+
+PLAY FORM
+
+RETURNS TO UPDATED FORM -->
+
+{% extends "base.html" %}
+{% block body %}
+
+<h1>My Hand:</h1>
+{% for i in names %}
+<h2> <a href= "/play"> {{ i }} </a></h2> 
+{% endfor %}
+
+<form method = "POST" action = "/draw">
+	<input type = "submit" name = "draw" value = "DRAW!"> 
+</form>
+
+{% endblock %}
+
+

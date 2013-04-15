@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block body %}
+
+<h1>Open Games</h1>
+{% for open_game in games %}
+<h2> <a href= "/open_game/{{open_game.id}}"> Join Game {{ open_game.id }} </a>
+ </h2> 
+{% endfor %}
+
+
+{% endblock %}

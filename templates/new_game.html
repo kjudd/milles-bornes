@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block body %}
+<form method = "POST" action = "/create_game">
+	<input type = "submit" name = "create game" value = "play new game!"> 
+</form>
+
+<form method = "POST" action = "/join_game">
+	<input type = "submit" name = "join game" value = "join game!"> 
+</form>
+
+<h1>My Games:</h1>
+{% for game in gameplay %}
+<h2> <a href= "/resume_game/{{game}}"> Game {{ game }} </a></h2> 
+{% endfor %}
+
+{% endblock %}
