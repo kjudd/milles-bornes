@@ -7,15 +7,20 @@ RETURNS TO UPDATED FORM -->
 {% extends "base.html" %}
 {% block body %}
 
+
 <h1>My Hand:</h1>
-{% for i in names %}
-<h2> <a href= "/play"> {{ i }} </a></h2> 
+{% for card in names %}
+<h2> <a href= "/play_card/{{card.id}}"> {{ card.action }} </a></h2> 
 {% endfor %}
 
+<p>Your status is: {{status}}</p>
+<p>Your immunity is: {{immunity}}</p>
+<p>Miles traveled: {{miles}}</p>
+
+{% if names|length < 7 %}
 <form method = "POST" action = "/draw">
 	<input type = "submit" name = "draw" value = "DRAW!"> 
 </form>
+{% endif %}
 
 {% endblock %}
-
-

@@ -8,14 +8,14 @@ app = Flask(__name__)
 def cards_in_hand(player_hand):
 	cards_in_hand = []
 	for card in player_hand:
-		card_info = model.session.query(model.Card).get(card)
+		int_card = int(card)
+		card_info = model.session.query(model.Card).get(int_card)
 		cards_in_hand.append(card_info)
-	named_cards = []
-	for card in cards_in_hand:
-		action = card.action
-		named_cards.append(action)
-	return named_cards
-
+	# named_cards = []
+	# for card in cards_in_hand:
+	# 	action = card.action
+	# 	named_cards.append(action)
+	return cards_in_hand
 
 #function to convert a list of cards into a string(if it's not a list of integers)
 def cardstring(cardlist):
@@ -41,7 +41,7 @@ def signup():
 	name = request.form['name']
 	email = request.form['email']
 	password = request.form['password']
-	player = model.Player(id = None, name = name, email = email, password = password, miles = 0)
+	player = model.Player(id = None, name = name, email = email, password = password)
 	model.session.add(player)
 	model.session.commit()
 	session['player'] = player.id
@@ -73,7 +73,7 @@ def create_game():
 	model.session.commit()
 	string_hand = str(dealt_cards)
 	player_hand = string_hand.strip('[]')
-	usergame = model.Usergame(id = None, game_id = game.id, user_id = player, position = 1, hand = player_hand)
+	usergame = model.Usergame(id = None, game_id = game.id, user_id = player, position = 1, hand = player_hand, player_status = "None", player_immunity = "None", miles = 0)
 	model.session.add(usergame)
 	model.session.commit()
 	return "Awaiting players"
@@ -104,7 +104,7 @@ def join_new_game(id):
 	deal_cards[-6: ] = []
 	string_hand = str(dealt_cards)
 	player_hand = string_hand.strip('[]')
-	usergame = model.Usergame(id = None, game_id = game.id, user_id = player, position = 2, hand = player_hand)
+	usergame = model.Usergame(id = None, game_id = game.id, user_id = player, position = 2, hand = player_hand, player_status = "None", player_immunity = "None", miles = 0)
 	model.session.add(usergame)
 	string_draw = str(deal_cards)
 	draw_deck = string_draw.strip('[]')
@@ -119,19 +119,20 @@ def resume_game(id):
 
 @app.route("/gameplay", methods = ["POST", "GET"])
 def gameplay():
-# DRAW IS FUCKED UP IN ITS OWN WAY?
 	player = session.get("player")
 	game = session.get("game")
-	# player_info = model.session.query(model.Usergame).filter_by(user_id = player).all()
-	# usergame = model.session.query(model.Usergame).filter_by(user_id = player)
 	usergame = model.session.query(model.Usergame).filter_by(user_id = player, game_id = game).all()
 	usergame = usergame[0]
 	draw_pile = usergame.game.draw_pile
 	dealt_cards = usergame.hand
-	dealt_tuple = eval(dealt_cards)
-	dealt_list = list(dealt_tuple)
+	dealt_tuple = str(dealt_cards)
+	dealt_list = dealt_tuple.split(',')
 	names = cards_in_hand(dealt_list)
-	return render_template("gameplay.html", names = names)
+	print names
+	status = usergame.player_status
+	immunity = usergame.player_immunity
+	miles = usergame.miles
+	return render_template("gameplay.html", names = names, status = status, immunity = immunity, miles = miles)
 
 @app.route("/draw", methods = ["POST"])
 def draw():
@@ -155,9 +156,60 @@ def draw():
 	new_hand = str(hand)
 	commit_hand = new_hand.strip('[]')
 	usergame.hand = commit_hand
-	print commit_hand
 	model.session.commit()
 	return redirect("/gameplay")
+
+# @app.route("/play_card<int:id>", methods = ["POST", "GET"])
+# #IF TREE
+# CARD DOWN
+# IF your status is roll, you can add miles 
+# or put hazards on the other player unless that player has immunities
+# or discard
+# or put down an immunity card (+1 turn)
+# ELIF your status is none you can put down a roll 
+# or put hazards on another player unless that player had immunities
+# or put down an immunity card
+# or discard
+# ELIF your status is a hazard type card
+# you can put down a hazard card on another player unless that player has immunities
+# or discard
+# or put down an immunity card
+# or put down the matching remedy card
+
+
+ 
+# def play_card(id):
+# 	player_id = session.get("player")
+# 	game = session.get("game")
+# 	usergame = model.session.query(model.Usergame).filter_by(user_id = player, game_id = game).all()
+# 	usergame_hand = usergame[0].hand
+# 	string_hand = str(usergame_hand)
+# 	split_hand = string_hand.split(',')
+# 	card = model.session.query(model.Card).get(id)
+# 	if len(split_hand) < 7:
+# 		return "You can't play until you draw"
+# 	if usergame.player_status != "roll":
+# 		if card.type == "hazard":
+# 			other_player = model.session.query(model.Usergame).filter_by(game_id = game, position != usergame.position).all()
+# 			#DO THEY HAVE IMMUNITIES?
+# 		elif card.type == 	
+# 	elif usergame.player_status == "roll"
+# 		if card.type == "miles":
+# 			integer = int(card.action)
+# 			usergame.miles += integer
+# 			model.session.commit() 
+# 			return redirect("/gameplay")
+
+# # 	elif card.type == "hazard":
+
+
+# # 	elif card.type == "remedy":
+
+# # 	elif card.type == "safety":
+
+
+
+
 
 
 

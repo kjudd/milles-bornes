@@ -21,7 +21,6 @@ class Player(Base):
 	name = Column(String(140), nullable = True)
 	email = Column(String(140), nullable = True)
 	password = Column(String(140), nullable = True)
-	miles = Column(Integer(4), nullable = True)
 
 class Card(Base):
 	__tablename__ = "cards"
@@ -42,6 +41,7 @@ class Usergame(Base):
 	hand = Column(String(30), nullable = True)
 	player_status = Column(String(140), nullable = True)
 	player_immunity = Column(String(4), nullable = True)
+	miles = Column(Integer(4), nullable = True)
 
 
 	game = relationship("Game", backref = backref("games", order_by=id))
