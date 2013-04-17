@@ -6,16 +6,19 @@ RETURNS TO UPDATED FORM -->
 
 {% extends "base.html" %}
 {% block body %}
-
-
+{% if names|length == 7 %}
 <h1>My Hand:</h1>
 {% for card in names %}
+{% if card in valid_moves %}
 <h2> <a href= "/play_card/{{card.id}}"> {{ card.action }} </a></h2> 
+{% else %}
+<h2> <a href= "/discard/{{card.id}}"> {{card.action}} </a> </h2>
+{% endif %}
 {% endfor %}
+{% endif %}
 
-<p>Your status is: {{status}}</p>
-<p>Your immunity is: {{immunity}}</p>
-<p>Miles traveled: {{miles}}</p>
+Miles = {{miles}}
+Going = {{going}}
 
 {% if names|length < 7 %}
 <form method = "POST" action = "/draw">

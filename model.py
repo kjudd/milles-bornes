@@ -22,6 +22,7 @@ class Player(Base):
 	email = Column(String(140), nullable = True)
 	password = Column(String(140), nullable = True)
 
+
 class Card(Base):
 	__tablename__ = "cards"
 
@@ -39,16 +40,33 @@ class Usergame(Base):
 	user_id = Column(Integer(1000), ForeignKey('players.id'))
 	position = Column(Integer(1))
 	hand = Column(String(30), nullable = True)
-	player_status = Column(String(140), nullable = True)
-	player_immunity = Column(String(4), nullable = True)
 	miles = Column(Integer(4), nullable = True)
+	immunities = Column(Integer(4), nullable = True)
+	#Vulnerabilities
+	can_be_stopped = Column(Integer(1), nullable = True)
+	can_have_flat = Column(Integer(1), nullable = True)
+	can_have_low_gas = Column(Integer(1), nullable = True)
+	can_have_speed_limit = Column(Integer(1), nullable = True)
+	can_be_in_accident = Column(Integer(1), nullable = True)
+	#Status
+	speed_limit = Column(Integer(1), nullable = True)
+	can_go = Column(Integer(1), nullable = True)
+	has_flat = Column(Integer(1), nullable = True)
+	has_accident = Column(Integer(1), nullable = True)
+	gas_empty = Column(Integer(1), nullable = True)
 
+
+
+# 1. analyze cards CHECK
+# 2. player selects
+# 3. apply selection
 
 	game = relationship("Game", backref = backref("games", order_by=id))
 	player = relationship("Player", backref = backref("players", order_by=id))
 
 
 class Game(Base):
+
 	__tablename__ = "games"
 	id = Column(Integer, primary_key = True)
 	draw_pile = Column(String(500), nullable = True)
