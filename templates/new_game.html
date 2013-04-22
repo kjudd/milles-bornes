@@ -10,7 +10,15 @@
 
 <h1>My Games:</h1>
 {% for game in gameplay %}
+
 <h2> <a href= "/resume_game/{{game}}"> Game {{ game }} </a></h2> 
+
 {% endfor %}
+
+
+{% if current_user.is_authenticated() %}
+<p><a href="{{ url_for('logout') }}">Logout</a></p>
+{% endif %}
+
 
 {% endblock %}

@@ -22,6 +22,21 @@ class Player(Base):
 	email = Column(String(140), nullable = True)
 	password = Column(String(140), nullable = True)
 
+	def is_authenticated(self):
+		return True
+
+	def is_active(self):
+		return True
+
+	def is_anonymous(self):
+		return False
+
+	def get_id(self):
+		return unicode(self.id)
+
+	def __repr__(self):
+		return '<User %r>' % (self.nickname)
+
 
 class Card(Base):
 	__tablename__ = "cards"
@@ -55,11 +70,14 @@ class Usergame(Base):
 	has_accident = Column(Integer(1), nullable = True)
 	gas_empty = Column(Integer(1), nullable = True)
 
-
-
-# 1. analyze cards CHECK
-# 2. player selects
-# 3. apply selection
+	#Method displays the action of a card in player hand.
+	def cards_in_hand(self, player_hand):
+		cards_in_hand = []
+		for card in player_hand:
+			int_card = int(card)
+			card_info = session.query(Card).get(int_card)
+			cards_in_hand.append(card_info)
+		return cards_in_hand
 
 	game = relationship("Game", backref = backref("games", order_by=id))
 	player = relationship("Player", backref = backref("players", order_by=id))

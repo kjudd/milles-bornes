@@ -1,20 +1,47 @@
 {% extends "base.html" %}
+
+
 {% block body %}
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li style = "color: red;">{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
 
 <h1>Login</h1>
-
-<form method = "POST" action = "/authenticate">
-	ID <input type = "text" name = "id" </input>
-	Password<input type = "text" name = "password" </input>
-	<input type = "submit"> 
+<form method = "POST" action = "/">
+	{{form.hidden_tag()}}
+    <div>{{ form.email.label }}: {{ form.email() }}</div>
+    {% for error in form.errors.email %}
+    <span style="color: red;">[{{error}}]</span>
+    {% endfor %}<br>
+    <div>{{ form.password.label}}: {{ form.password() }}
+    {% for error in form.errors.password %}
+    <span style="color: red;">[{{error}}]</span>
+    {% endfor %}<br>
+    <input type = "submit">  
 </form>
 
 <h1>Sign Up</h1>
-<form method = "POST" action = "/signup">
-	Name <input type = "text" name = "name" </input>
-	Email <input type = "text" name = "email" </input>
-	Password<input type = "text" name = "password" </input>
-	<input type = "submit"> 
+<form method="POST" action="/">
+	{{form.hidden_tag()}}
+    <div>{{ form.name.label }}: {{ form.name() }}</div>
+    {% for error in form.errors.name %}
+    <span style="color: red;">[{{error}}]</span>
+    {% endfor %}<br>
+    <div>{{ form.email.label}}: {{ form.email() }}
+    {% for error in form.errors.email %}
+    <span style="color: red;">[{{error}}]</span>
+    {% endfor %}<br>
+    <div>{{ form.password.label }}: {{ form.password() }}</div>
+    {% for error in form.errors.password %}
+    <span style="color: red;">[{{error}}]</span>
+    {% endfor %}<br>
+    <input type = "submit"> 
 </form>
 
 {% endblock %}

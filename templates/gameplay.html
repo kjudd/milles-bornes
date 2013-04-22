@@ -1,9 +1,3 @@
-<!-- DRAW FORM
-
-PLAY FORM
-
-RETURNS TO UPDATED FORM -->
-
 {% extends "base.html" %}
 {% block body %}
 {% if names|length == 7 %}
@@ -12,7 +6,14 @@ RETURNS TO UPDATED FORM -->
 {% if card in valid_moves %}
 <h2> <a href= "/play_card/{{card.id}}"> {{ card.action }} </a></h2> 
 {% else %}
-<h2> <a href= "/discard/{{card.id}}"> {{card.action}} </a> </h2>
+
+<script type="text/javascript">
+function confirm_alert(node) {
+    return confirm("Do you want to discard this card?");
+}
+</script>
+<h2> <a href= "/discard/{{card.id}}" onclick="return confirm_alert(this);"> {{card.action}} </a> </h2>
+
 {% endif %}
 {% endfor %}
 {% endif %}
