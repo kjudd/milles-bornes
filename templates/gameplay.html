@@ -1,9 +1,11 @@
 {% extends "base.html" %}
 {% block body %}
+
 {% if names|length == 7 %}
 <h1>My Hand:</h1>
 {% for card in names %}
 {% if card in valid_moves %}
+
 <h2> <a href= "/play_card/{{card.id}}"> {{ card.action }} </a></h2> 
 {% else %}
 
@@ -26,5 +28,6 @@ Going = {{going}}
 	<input type = "submit" name = "draw" value = "DRAW!"> 
 </form>
 {% endif %}
+
 
 {% endblock %}

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block body %}
+<script src="http://js.pusher.com/2.0/pusher.min.js"></script>
+<script>
+var pusher = new Pusher('cacfdd42bc51bc59cfb6'); 
+</script>
+<h1>My Hand:</h1>
+{% for card in names %}
+<h2>{{ card.action }}</h2> 
+{% endfor %}
+
+<script>
+
+var channel = pusher.subscribe('a_channel');
+channel.bind('an_event', function(data) {
+    alert('Your opponent has played: ' + data['played']); window.location = "/turn"
+});
+</script>
+
+{% endblock %}

@@ -7,6 +7,8 @@ import os
 from flask_login import LoginManager
 from flask_login import login_user, logout_user, current_user, login_required
 import bcrypt
+import pusher
+import config_pusher
 
 app = Flask(__name__)
 
@@ -17,6 +19,7 @@ app.config.from_object('config')
 lm = LoginManager()
 lm.setup_app(app)
 
+p = pusher.Pusher(app_id=config_pusher.app_id, key=config_pusher.app_key, secret=config_pusher.app_secret)
 
 #Function to convert a list of cards into a string (if it's not a list of integers).
 def cardstring(cardlist):
@@ -146,7 +149,7 @@ def join_new_game(id):
 	draw_deck = string_draw.strip('[]')
 	game.draw_pile = draw_deck
 	model.session.commit()
-	return redirect("/turn")
+	return redirect("/gameplay")
 
 #View to resume a game in progress from list.
 @app.route("/resume_game/<int:id>", methods = ["POST", "GET"])
@@ -164,9 +167,24 @@ def turn():
 	usergame = model.session.query(model.Usergame).filter(and_(model.Usergame.user_id == player, model.Usergame.game_id == game)).all()
 	usergame = usergame[0]
 	if usergame.position != 1:
-		return "Not your turn"
+		return redirect("/await_turn")
 	elif usergame.position == 1:
 		return redirect("/gameplay")
+
+@app.route("/await_turn", methods = ["POST", "GET"])
+@login_required
+def await_turn():
+	player = current_user.id
+	game = session.get("game")
+	usergame = model.session.query(model.Usergame).filter(and_(model.Usergame.user_id == player, model.Usergame.game_id == game)).all()
+	usergame = usergame[0]
+	other_players = model.session.query(model.Usergame).filter(and_(model.Usergame.game_id == game, model.Usergame.position != usergame.position)).all()
+	draw_pile = usergame.game.draw_pile
+	dealt_cards = usergame.hand
+	dealt_tuple = str(dealt_cards)
+	dealt_list = dealt_tuple.split(',')
+	names = model.Usergame.cards_in_hand(usergame, dealt_list)
+	return render_template("await_turn.html", names = names)
 
 #View to display player options from hand.
 #Evaluates options for all valid moves based on both player statuses before displaying.
@@ -189,62 +207,62 @@ def gameplay():
 		if card.action == "out of gas":
 			if other_player.can_have_low_gas == 1 and str(other_player.immunities)[0] != "1":
 				return card
-			else: return 0
+			else: return None
 		elif card.action == "flat tire":
 			if other_player.can_have_flat == 1 and str(other_player.immunities)[1] != "1":
 				return card
-			else: return 0
+			else: return None
 		elif card.action == "accident":
 			if other_player.can_be_in_accident == 1 and str(other_player.immunities)[2] != "1":
 				return card
-			else: return 0
+			else: return None
 		elif card.action == "speed limit":
 			if other_player.can_have_speed_limit == 1 and str(other_player.immunities)[3] != "1":
 				return card
-			else: return 0
+			else: return None
 		elif card.action == "stop":
 			if other_player.can_be_stopped == 1 and str(other_player.immunities)[3] != "1":
 				return card
-			else: return 0
+			else: return None
 
 	def check_miles(card):
 		if usergame.can_go == 1:
 			if int(card.action) == 200:
 				if usergame.miles <= 800 and usergame.speed_limit < 50:
 					return card
-				else: return 0
+				else: return None
 			elif int(card.action) == 100:
 				if usergame.miles <= 900 and usergame.speed_limit < 50:
 					return card
-				else: return 0
+				else: return None
 			elif int(card.action) == 75:
 				if usergame.miles <= 925 and usergame.speed_limit < 50:
 					return card
-				else: return 0
+				else: return None
 			elif int(card.action) == 50:
 				if usergame.miles <= 950:
 					return card
-				else: return 0
+				else: return None
 			elif int(card.action) == 25:
 				if usergame.miles <= 975:
 					return card
-				else: return 0
+				else: return None
 		else:
-			return 0
+			return None
 
 	def check_remedy(card):
 		if card.action == "gasoline":
 			if usergame.gas_empty == 1:
 				return card
-			else: return 0
+			else: return None
 		elif card.action == "spare tire":
 			if usergame.has_flat == 1:
 				return card
-			else: return 0
+			else: return None
 		elif card.action == "repairs":
 			if usergame.has_accident == 1:
 				return card
-			else: return 0
+			else: return None
 		elif card.action == "end of limit":
 			if usergame.speed_limit == 1:
 				return card
@@ -252,7 +270,7 @@ def gameplay():
 			if usergame.can_go == 0:
 				if usergame.gas_empty == 0 and usergame.has_flat == 0 and usergame.has_accident == 0:
 					return card
-			else: return 0
+			else: return None
 
 	for card in names:
 		if card.type == "hazard":
@@ -274,8 +292,11 @@ def gameplay():
 		
 		miles = usergame.miles
 		going = usergame.can_go
-
-	return render_template("gameplay.html", names = names, valid_moves = valid_moves, miles = miles, going = going)
+		#IF IT'S COMING FROM CARD PLAYED THEN PERFORM THE TRIGGER...OR SOME OTHER WAY
+		#FIGURE OUT SECURE CHANNELS!!
+		channel = game
+	return render_template("gameplay.html", channel = channel, names = names, 
+		valid_moves = valid_moves, miles = miles, going = going)
 
 #Draw view, forces player to draw card if there are less than 7 cards in player hand.
 @app.route("/draw", methods = ["POST", "GET"])
@@ -306,6 +327,7 @@ def draw():
 @app.route("/discard/<int:id>", methods = ["POST", "GET"])
 @login_required
 def discard(id):
+	p['a_channel'].trigger('an_event', {"played" : "discard" })
 	player_id = current_user.id
 	game = session.get("game")
 	usergame = model.session.query(model.Usergame).filter_by(user_id = player_id, game_id = game).all()
@@ -341,6 +363,12 @@ def play_card(id):
 	string_hand = str(usergame_hand)
 	split_hand = string_hand.split(',')
 	card = model.session.query(model.Card).get(id)
+	p['a_channel'].trigger('an_event', {"played" : card.action })
+	for i in split_hand:
+		if int(i) == id:
+			split_hand.remove(i)
+	new_hand = ','.join(split_hand)
+	usergame.hand = new_hand
 	def update_turns():
 		usergame.position = 2
 		other_player.position = 1
@@ -379,72 +407,36 @@ def play_card(id):
 		if card.action == "right of way":
 			usergame.immunities += 1
 		#extra turn, no update
-		model.session.commit()
-		return redirect("/turn")
  	elif card.type == "hazard":
  		if card.action == "out of gas":
  			stop_everything()
  			other_player.gas_empty = 1
- 			update_turns()
- 			model.session.commit()
- 			return redirect("/turn")
  		if card.action == "flat tire":
  			stop_everything()
  			other_player.has_flat = 1
- 			update_turns()
- 			model.session.commit()
- 			return redirect("/turn")
  		if card.action == "accident":
  			stop_everything()
  			other_player.has_accident = 1
- 			update_turns()
- 			model.session.commit()
- 			return redirect("/turn")
  		if card.action == "stop":
  			stop_everything()
- 			update_turns()
- 			model.session.commit()
- 			return redirect("/turn") 		
  		if card.action == "speed limit":
  			other_player.speed_limit = 50
- 			update_turns()
- 			model.session.commit()
- 			return redirect("/turn")
+ 		update_turns()
 	elif card.type == "remedy":
 		if card.action == "roll":
 			start_everything()
-			update_turns()
-			model.session.commit()
-			return redirect("/turn")
 		if card.action == "gasoline":
-			start_everything()
 			usergame.gas_empty = 0
-			update_turns()
-			model.session.commit()
-			return redirect("/turn")
 		if card.action == "spare tire":
-			start_everything()
 			usergame.has_flat = 0
-			update_turns()
-			model.session.commit()
-			return redirect("/turn")
 		if card.action == "repairs":
-			start_everything()
 			usergame.has_accident = 0
-			update_turns()
-			model.session.commit()
-			return redirect("/turn")
 		if card.action == "end of limit":
 			speed_limit = 0
-			update_turns()
-			model.session.commit()
-			return redirect("/turn")
+		update_turns()
 
-	split_hand.remove(id)
-	new_hand = ','.join(split_hand)
-	usergame.hand = new_hand
-	update_turns()
 	model.session.commit()
+	return redirect("/turn")
 
 @app.route('/logout')
 def logout():
