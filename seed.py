@@ -8,7 +8,8 @@ def load_cards(session):
         for row in reader:
             type = row[0]
             action = row[1]
-            new_card = model.Card(id = None, type = type, action = action, image = None)
+            image = row[2]
+            new_card = model.Card(id = None, type = type, action = action, image = image)
             session.add(new_card)
         session.commit()
 

@@ -44,7 +44,7 @@ class Card(Base):
 	id = Column(Integer, primary_key = True)
 	type = Column(String(64), nullable = True)
 	action = Column(String(64), nullable = True)
-	image = Column(String(300), nullable = True)
+	image = Column(String(500), nullable = True)
 
 class Usergame(Base):
 
@@ -78,6 +78,44 @@ class Usergame(Base):
 			card_info = session.query(Card).get(int_card)
 			cards_in_hand.append(card_info)
 		return cards_in_hand
+
+	def check_status(usergame):
+		if usergame.can_go == 1:
+			status = "Going"
+		else:
+			if usergame.has_flat == 1:
+				status = "Flat Tire"
+			elif usergame.has_accident == 1:
+				status = "Accident"
+			elif usergame.gas_empty == 1:
+				status = "Gas Empty"
+			else:
+				status = "Stopped"
+		return status
+
+	def check_speed(usergame):
+		if usergame.speed_limit == 0:
+			limit = "None"
+		else:
+			limit = usergame.speed_limit
+		return limit
+
+	def check_immunities(usergame):
+		current_immunities = []
+		string = str(usergame.immunities)
+		if string[0] == 3:
+			current_immunities.append("Extra Tank")
+		if string[1] == 3:
+			current_immunities.append("Puncture Proof")
+		if string[2] == 3:
+			current_immunities.append("Driving Ace")
+		if string[3] == 3:
+			current_immunities.append("Right of Way")
+		else:
+			current_immunities.append("None")
+		return current_immunities
+
+		
 
 	game = relationship("Game", backref = backref("games", order_by=id))
 	player = relationship("Player", backref = backref("players", order_by=id))

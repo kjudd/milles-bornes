@@ -21,11 +21,6 @@ lm.setup_app(app)
 
 p = pusher.Pusher(app_id=config_pusher.app_id, key=config_pusher.app_key, secret=config_pusher.app_secret)
 
-#Function to convert a list of cards into a string (if it's not a list of integers).
-def cardstring(cardlist):
-	string_cardlist = ','.join(cardlist)
-	draw_deck = str(string_cardlist)
-
 #Login manager setup for Flask-Login.
 @lm.user_loader
 def load_user(id):
@@ -109,7 +104,7 @@ def create_game():
 		can_go = 0, has_flat = 0, has_accident = 0, gas_empty = 0)
 	model.session.add(usergame)
 	model.session.commit()
-	return "Awaiting players"
+	return redirect("/turn")
 
 #View to display list of joinable games
 #Joinable games have a certain number of cards in draw pile, currently 2 player
@@ -176,15 +171,28 @@ def turn():
 def await_turn():
 	player = current_user.id
 	game = session.get("game")
+	channel = str(game)
 	usergame = model.session.query(model.Usergame).filter(and_(model.Usergame.user_id == player, model.Usergame.game_id == game)).all()
 	usergame = usergame[0]
 	other_players = model.session.query(model.Usergame).filter(and_(model.Usergame.game_id == game, model.Usergame.position != usergame.position)).all()
+	other_player = other_players[0]
 	draw_pile = usergame.game.draw_pile
 	dealt_cards = usergame.hand
 	dealt_tuple = str(dealt_cards)
 	dealt_list = dealt_tuple.split(',')
 	names = model.Usergame.cards_in_hand(usergame, dealt_list)
-	return render_template("await_turn.html", names = names)
+	player_miles = usergame.miles
+	player_status = model.Usergame.check_status(usergame)
+	player_speed = model.Usergame.check_speed(usergame)
+	player_immunity = model.Usergame.check_immunities(usergame)
+	op_miles = other_players[0].miles
+	op_status = model.Usergame.check_status(other_players[0])
+	op_speed = model.Usergame.check_speed(other_players[0])
+	op_immunity = model.Usergame.check_immunities(other_players[0])
+	return render_template("await_turn.html", names = names, channel = channel,
+		player_miles = player_miles, player_status = player_status,	player_speed = player_speed, 
+		player_immunity = player_immunity, op_miles = op_miles, op_status = op_status,
+		op_speed = op_speed, op_immunity = op_immunity)
 
 #View to display player options from hand.
 #Evaluates options for all valid moves based on both player statuses before displaying.
@@ -290,13 +298,18 @@ def gameplay():
 		elif card.type == "safety":
 			valid_moves.append(card)
 		
-		miles = usergame.miles
-		going = usergame.can_go
-		#IF IT'S COMING FROM CARD PLAYED THEN PERFORM THE TRIGGER...OR SOME OTHER WAY
-		#FIGURE OUT SECURE CHANNELS!!
-		channel = game
-	return render_template("gameplay.html", channel = channel, names = names, 
-		valid_moves = valid_moves, miles = miles, going = going)
+		player_miles = usergame.miles
+		player_status = model.Usergame.check_status(usergame)
+		player_speed = model.Usergame.check_speed(usergame)
+		player_immunity = model.Usergame.check_immunities(usergame)
+		op_miles = other_players[0].miles
+		op_status = model.Usergame.check_status(other_players[0])
+		op_speed = model.Usergame.check_speed(other_players[0])
+		op_immunity = model.Usergame.check_immunities(other_players[0])
+	return render_template("gameplay.html", names = names, valid_moves = valid_moves, 
+		miles = player_miles, status = player_status, limit = player_speed,
+		op_miles = op_miles, op_status = op_status, op_speed = op_speed,
+		player_immunity = player_immunity, op_immunity = op_immunity)
 
 #Draw view, forces player to draw card if there are less than 7 cards in player hand.
 @app.route("/draw", methods = ["POST", "GET"])
@@ -327,9 +340,10 @@ def draw():
 @app.route("/discard/<int:id>", methods = ["POST", "GET"])
 @login_required
 def discard(id):
-	p['a_channel'].trigger('an_event', {"played" : "discard" })
 	player_id = current_user.id
 	game = session.get("game")
+	str_game = str(game)
+	p[str_game].trigger('an_event', {"played" : "discard" })
 	usergame = model.session.query(model.Usergame).filter_by(user_id = player_id, game_id = game).all()
 	usergame = usergame[0]
 	other_players = model.session.query(model.Usergame).filter(and_(model.Usergame.game_id == game, model.Usergame.position != usergame.position)).all()
@@ -363,7 +377,8 @@ def play_card(id):
 	string_hand = str(usergame_hand)
 	split_hand = string_hand.split(',')
 	card = model.session.query(model.Card).get(id)
-	p['a_channel'].trigger('an_event', {"played" : card.action })
+	str_game = str(game)
+	p[str_game].trigger('an_event', {"played" : card.action })
 	for i in split_hand:
 		if int(i) == id:
 			split_hand.remove(i)

@@ -4,17 +4,39 @@
 <script>
 var pusher = new Pusher('cacfdd42bc51bc59cfb6'); 
 </script>
-<h1>My Hand:</h1>
+<p><h1>Awaiting Turn</h1></p>
+
+<p><h2>My Hand:</h2>
 {% for card in names %}
-<h2>{{ card.action }}</h2> 
+{{ card.image|safe }}
 {% endfor %}
 
-<script>
 
-var channel = pusher.subscribe('a_channel');
+
+<script>
+var channel = pusher.subscribe({{channel|tojson|safe}});
 channel.bind('an_event', function(data) {
     alert('Your opponent has played: ' + data['played']); window.location = "/turn"
 });
 </script>
+
+<p>Miles = {{player_miles}}</p>
+<p>Current Status = {{player_status}}</p>
+<p>Current Speed Limit = {{player_speed}}</p>
+Current Immunities =
+{% for immunity in player_immunity %}
+<p>{{immunity}}</p>
+{% endfor %}
+
+Opponent:
+<p>Miles = {{op_miles}}</p>
+<p>Current Status = {{op_status}}</p>
+<p>Current Speed Limit = {{op_speed}}</p>
+Current Immunities =
+{% for immunity in op_immunity %}
+<p>{{immunity}}</p>
+{% endfor %}
+
+<p><a href="{{ url_for('choose_game') }}">Back to your games</a></p>
 
 {% endblock %}

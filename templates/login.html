@@ -2,6 +2,9 @@
 
 
 {% block body %}
+
+
+
 {% with messages = get_flashed_messages() %}
   {% if messages %}
     <ul class=flashes>
@@ -12,36 +15,39 @@
   {% endif %}
 {% endwith %}
 
+
 <h1>Login</h1>
 <form method = "POST" action = "/">
 	{{form.hidden_tag()}}
-    <div>{{ form.email.label }}: {{ form.email() }}</div>
+    <div>{{ form.email.label }} {{ form.email() }}</div>
     {% for error in form.errors.email %}
     <span style="color: red;">[{{error}}]</span>
     {% endfor %}<br>
-    <div>{{ form.password.label}}: {{ form.password() }}
+    <div>{{ form.password.label}} {{ form.password() }}
     {% for error in form.errors.password %}
     <span style="color: red;">[{{error}}]</span>
     {% endfor %}<br>
-    <input type = "submit">  
+    <button class = "btn btn-success" type = "submit">Submit</button>  
 </form>
+
 
 <h1>Sign Up</h1>
 <form method="POST" action="/">
 	{{form.hidden_tag()}}
-    <div>{{ form.name.label }}: {{ form.name() }}</div>
+    <div>{{ form.name.label }} {{ form.name() }}</div>
     {% for error in form.errors.name %}
     <span style="color: red;">[{{error}}]</span>
     {% endfor %}<br>
-    <div>{{ form.email.label}}: {{ form.email() }}
+    <div>{{ form.email.label}} {{ form.email() }}
     {% for error in form.errors.email %}
     <span style="color: red;">[{{error}}]</span>
     {% endfor %}<br>
-    <div>{{ form.password.label }}: {{ form.password() }}</div>
+    <div>{{ form.password.label }} {{ form.password() }}</div>
     {% for error in form.errors.password %}
     <span style="color: red;">[{{error}}]</span>
     {% endfor %}<br>
-    <input type = "submit"> 
+    <button class = "btn btn-success" type = "submit">Submit</button>  
 </form>
+
 
 {% endblock %}
