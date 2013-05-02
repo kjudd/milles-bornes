@@ -57,7 +57,7 @@ def login():
 		if player is None:
 			flash('Invalid login. Please try again.')
 			return redirect('/')
-		elif bcrypt.hashpw(player.password, bcrypt.gensalt(10)):
+		elif bcrypt.hashpw(login_form.password.data, player.password) == player.password:
 				login_user(player)
 				return redirect("/choose_game")
 		else:
@@ -73,8 +73,11 @@ def choose_game():
 	player_games = model.session.query(model.Usergame).filter_by(user_id = player).all()
 	game_ids = []
 	for game in player_games:
-		games = game.game_id
-		game_ids.append(games)
+		str_game = str(game.game.draw_pile)
+		split_game = str_game.split(',')
+		if len(split_game) < 100:
+			games = game.game_id
+			game_ids.append(games)
 	positions = []
 	for position in player_games:
 		position = position.position
@@ -86,10 +89,10 @@ def choose_game():
 @login_required
 def create_game():
 	player = current_user.id
-	deck = range(1, 101)
+	deck = range(1, 107)
 	random.shuffle(deck)
-	dealt_cards = deck[94: ]
-	deck[94: ] = []
+	dealt_cards = deck[100: ]
+	deck[100: ] = []
 	string_deck = str(deck)
 	draw_deck = string_deck.strip('[]')
 	game = model.Game(id = None, draw_pile = draw_deck)
@@ -115,7 +118,7 @@ def join_game():
 	open_games = []
 	for game in all_usergames:
 		draw = game.game.draw_pile.split(',')
-		if len(draw) == 94 and game.user_id != current_user.id:
+		if len(draw) == 100 and game.user_id != current_user.id:
 			open_games.append(game.game)
 		else:
 			continue
@@ -177,6 +180,13 @@ def await_turn():
 	other_players = model.session.query(model.Usergame).filter(and_(model.Usergame.game_id == game, model.Usergame.position != usergame.position)).all()
 	other_player = other_players[0]
 	draw_pile = usergame.game.draw_pile
+	if usergame.miles == 1000:
+		return redirect("/winner")
+	elif other_players[0].miles == 1000:
+		return redirect("/loser")
+	draw_pile = usergame.game.draw_pile
+	if len(draw_pile) == 0:
+		return redirect("/tie_game")
 	dealt_cards = usergame.hand
 	dealt_tuple = str(dealt_cards)
 	dealt_list = dealt_tuple.split(',')
@@ -204,7 +214,13 @@ def gameplay():
 	usergame = model.session.query(model.Usergame).filter(and_(model.Usergame.user_id == player, model.Usergame.game_id == game)).all()
 	usergame = usergame[0]
 	other_players = model.session.query(model.Usergame).filter(and_(model.Usergame.game_id == game, model.Usergame.position != usergame.position)).all()
+	if usergame.miles == 1000:
+		return redirect("/winner")
+	elif other_players[0].miles == 1000:
+		return redirect("/loser")
 	draw_pile = usergame.game.draw_pile
+	if len(draw_pile) == 0:
+		return redirect("/tie_game")
 	dealt_cards = usergame.hand
 	dealt_tuple = str(dealt_cards)
 	dealt_list = dealt_tuple.split(',')
@@ -321,6 +337,9 @@ def draw():
 	usergame = usergame[0]
 	game_object = model.session.query(model.Game).get(game)
 	draw_pile = game_object.draw_pile
+	if len(draw_pile) == 0:
+		p[str_game].trigger('tied', {})
+		return redirect("/tie_game")
 	string_draw = str(draw_pile)
 	deal_cards = string_draw.split(',')
 	dealt_cards = deal_cards[-1]
@@ -378,7 +397,6 @@ def play_card(id):
 	split_hand = string_hand.split(',')
 	card = model.session.query(model.Card).get(id)
 	str_game = str(game)
-	p[str_game].trigger('an_event', {"played" : card.action })
 	for i in split_hand:
 		if int(i) == id:
 			split_hand.remove(i)
@@ -407,8 +425,10 @@ def play_card(id):
 		usergame.miles += integer
 		model.session.commit() 
 		if usergame.miles == 1000:
+			p[str_game].trigger('winner', {})
 			return redirect("/winner")
 		else:
+			p[str_game].trigger('an_event', {"played" : card.action })
 			update_turns()
 			model.session.commit()
 			return redirect("/turn")
@@ -449,9 +469,21 @@ def play_card(id):
 		if card.action == "end of limit":
 			speed_limit = 0
 		update_turns()
-
+	p[str_game].trigger('an_event', {"played" : card.action })
 	model.session.commit()
 	return redirect("/turn")
+
+@app.route("/winner")
+def winner():
+	return "You Won!"
+
+@app.route("/loser")
+def loser():
+	return "You lost :("
+
+@app.route("/tie_game")
+def tie_game():
+	return "Out of cards! This game is a draw."
 
 @app.route('/logout')
 def logout():

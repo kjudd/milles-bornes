@@ -1,41 +1,101 @@
 {% extends "base.html" %}
 {% block body %}
 
-{% if names|length == 7 %}
+<script>
+$(document).ready(function () {
+	var baraja = $('#baraja-el').baraja();
+	$('#nav-fan').on('click', function(event) {
+	 
+	    baraja.fan( {
+	        speed : 500,
+	        easing : 'ease-out',
+	        range : 40,
+	        direction : 'right',
+	        origin : { x : 50, y : 550 },
+	        center : true,
+	        translation : 0
+	    } );
+	 
+	} );
+});
+
+</script>
+
+<br>
+<br>
+
 <h1>My Hand:</h1>
-{% for card in names %}
-{% if card in valid_moves %}
-<a href= "/play_card/{{card.id}}"> {{ card.image|safe }} </a>
-{% else %}
 
 <script type="text/javascript">
 function confirm_alert(node) {
     return confirm("Do you want to discard this card?");
 }
 </script>
-<a href= "/discard/{{card.id}}" onclick="return confirm_alert(this);"> {{card.image|safe}} </a>
+
+<ul id="baraja-el" class="baraja-container">
+{% for card in names %}
+{% if card in valid_moves %}
+<li><a href= "/play_card/{{card.id}}"> {{ card.image|safe }} </a></li>
+{% else %}
+<li><a href= "/discard/{{card.id}}" onclick="return confirm_alert(this);"> {{card.image|safe}} </a></li>
 
 {% endif %}
 {% endfor %}
 {% endif %}
+</ul>
 
+{% if names|length == 7 %}
+<table class="table table-hover">
+<thead class="tablehead">
+<tr>
 
-<p>Miles = {{miles}}</p>
-<p>Current Status = {{status}}</p>
-<p>Current Speed Limit = {{limit}}</p>
-Current Immunities =
+<td><b>Scoreboard</b></td>
+<td><b>Your Score</b></td>
+<td><b>Opponent Score</b></td>
+
+</tr>
+</thead>
+
+<tbody>
+<tr class="success">
+<td>Miles</td> 
+<td>{{miles}}</td>
+<td>{{op_miles}}</td>
+</tr>
+
+<tr class="success">
+<td>Current Status</td> 
+<td>{{status}}</td>
+<td>{{op_status}}</td>
+</tr>
+
+<tr class="success">
+<td>Current Speed Limit</td> 
+<td>{{limit}}</td>
+<td>{{op_speed}}</td>
+</tr>
+
+<tr class="success">
+	<td>Current Immunities</td>
+<td>
+<ul class="tablelist">
 {% for immunity in player_immunity %}
-<p>{{immunity}}</p>
+<li class="tableitem">{{immunity}}</li>
 {% endfor %}
+</ul>
+</td>
 
-Opponent:
-<p>Miles = {{op_miles}}</p>
-<p>Current Status = {{op_status}}</p>
-<p>Current Speed Limit = {{op_speed}}</p>
-Current Immunities =
+<td>
+	<ul class="tablelist">
 {% for immunity in op_immunity %}
-<p>{{immunity}}</p>
+<li>{{immunity}}</li>
+</ul>
+</td>
+
 {% endfor %}
+</tbody>
+</table>
+
 
 {% if names|length < 7 %}
 <form method = "POST" action = "/draw">

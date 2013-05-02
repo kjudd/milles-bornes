@@ -1,0 +1,52 @@
+div.center {
+	width: 200px;
+	margin: 0 auto;
+	padding: 50px;
+}
+
+body#loginbody {
+  background-color: green;
+}
+
+#gamecenter {
+	width: 300px;
+	margin: 0 auto;
+	padding: 50px;
+}
+
+#cardfan {
+	display: inline-block;
+}
+
+#position {
+	display: inline-block;
+}
+
+#loginpage {
+	background-color: pink;
+	font-family: Futura, sans-serif;
+}
+
+#afterphoto {
+	background-color: blue
+}
+
+#card {
+	height: 150px;
+}
+
+footer {
+	text-style: gray;
+	font-size: small;
+	width: 50px;
+	margin: 0 auto;
+}
+
+.tablelist {
+	list-style: none;
+	margin: 0;
+}
+
+.tablehead {
+
+}

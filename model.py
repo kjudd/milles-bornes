@@ -103,16 +103,14 @@ class Usergame(Base):
 	def check_immunities(usergame):
 		current_immunities = []
 		string = str(usergame.immunities)
-		if string[0] == 3:
+		if string[0] == "3":
 			current_immunities.append("Extra Tank")
-		if string[1] == 3:
+		if string[1] == "3":
 			current_immunities.append("Puncture Proof")
-		if string[2] == 3:
+		if string[2] == "3":
 			current_immunities.append("Driving Ace")
-		if string[3] == 3:
+		if string[3] == "3":
 			current_immunities.append("Right of Way")
-		else:
-			current_immunities.append("None")
 		return current_immunities
 
 		

@@ -1,7 +1,20 @@
-{% extends "base.html" %}
+ <!DOCTYPE html>
+<html>
+    <head>
+        <title>Milles-Bornes</title>
+    <link rel="stylesheet" href="/static/css/bootstrap.css" type="text/css"/>
+    <link href="/static/css/bootstrap-responsive.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="/static/css/mycss.css" type="text/css"/>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap.js"></script>
+    </head>
+ 
+ <body id="loginbody">
 
-
-{% block body %}
+<div id="background">
+<div class="page-header">
+  <h1>Mille Bornes <small>Travel 1,000 Miles!</small></h1>
+</div>
 
 
 
@@ -16,14 +29,19 @@
 {% endwith %}
 
 
-<h1>Login</h1>
-<form method = "POST" action = "/">
+<div id="loginpage" class="center">
+
+
+<h1 id="loginhead">Login</h1>
+<form id="Login" method = "POST" action = "/">
 	{{form.hidden_tag()}}
-    <div>{{ form.email.label }} {{ form.email() }}</div>
+    <div>{{ form.email.label }} {{ form.email() }}
+    </div>
     {% for error in form.errors.email %}
     <span style="color: red;">[{{error}}]</span>
     {% endfor %}<br>
     <div>{{ form.password.label}} {{ form.password() }}
+    </div>
     {% for error in form.errors.password %}
     <span style="color: red;">[{{error}}]</span>
     {% endfor %}<br>
@@ -31,23 +49,53 @@
 </form>
 
 
-<h1>Sign Up</h1>
-<form method="POST" action="/">
+<h1 id="signuphead">Sign Up</h1>
+<form id = "signup" method="POST" action="/">
 	{{form.hidden_tag()}}
-    <div>{{ form.name.label }} {{ form.name() }}</div>
+    <div>{{ form.name.label }} {{ form.name() }}
+    </div>
     {% for error in form.errors.name %}
     <span style="color: red;">[{{error}}]</span>
     {% endfor %}<br>
     <div>{{ form.email.label}} {{ form.email() }}
     {% for error in form.errors.email %}
+    </div>
     <span style="color: red;">[{{error}}]</span>
     {% endfor %}<br>
-    <div>{{ form.password.label }} {{ form.password() }}</div>
+    <div>{{ form.password.label }} {{ form.password() }}
+    </div>
     {% for error in form.errors.password %}
     <span style="color: red;">[{{error}}]</span>
     {% endfor %}<br>
     <button class = "btn btn-success" type = "submit">Submit</button>  
 </form>
+</div>
+
+<!-- Button to trigger modal -->
+<a href="#myModal" role="button" class="btn" data-toggle="modal">Learn the Rules!</a>
+ 
+<!-- Modal -->
+<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel">Mille Bornes</h3>
+  </div>
+  <div class="modal-body">
+    <p>One fine body…</p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+    <button class="btn btn-primary">Save changes</button>
+  </div>
+</div>
 
 
-{% endblock %}
+<footer>
+    &copy; 2013
+</footer>
+
+
+
+</div>
+    </body>
+</html>
