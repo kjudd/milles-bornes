@@ -4,25 +4,17 @@
 <script>
 $(document).ready(function () {
 	var baraja = $('#baraja-el').baraja();
-	$('#nav-fan').on('click', function(event) {
-	 
 	    baraja.fan( {
-	        speed : 500,
-	        easing : 'ease-out',
-	        range : 40,
-	        direction : 'right',
-	        origin : { x : 50, y : 550 },
-	        center : true,
-	        translation : 0
+	        speed: 500,
+	        easing: 'ease-out',
+	        range: 40,
+	        direction: 'right',
+	        origin: {x: 50, y: 475},
+	        center: true,
+	        translation: 0
 	    } );
-	 
-	} );
 });
-
 </script>
-
-<br>
-<br>
 
 <h1>My Hand:</h1>
 
@@ -38,13 +30,14 @@ function confirm_alert(node) {
 <li><a href= "/play_card/{{card.id}}"> {{ card.image|safe }} </a></li>
 {% else %}
 <li><a href= "/discard/{{card.id}}" onclick="return confirm_alert(this);"> {{card.image|safe}} </a></li>
-
 {% endif %}
 {% endfor %}
-{% endif %}
+
 </ul>
 
-{% if names|length == 7 %}
+<br>
+<br>
+
 <table class="table table-hover">
 <thead class="tablehead">
 <tr>
@@ -95,7 +88,6 @@ function confirm_alert(node) {
 {% endfor %}
 </tbody>
 </table>
-
 
 {% if names|length < 7 %}
 <form method = "POST" action = "/draw">
