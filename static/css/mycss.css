@@ -4,14 +4,19 @@ div.center {
 	padding: 50px;
 }
 
-body#loginbody {
-  background-color: green;
+body.loginbody {
+	background: url(/static/img/197.gif)
+}
+
+#header {
+	margin: 0 auto;
 }
 
 #gamecenter {
 	width: 300px;
 	margin: 0 auto;
 	padding: 50px;
+	background-color: #FEFEF2;
 }
 
 #cardfan {
@@ -23,7 +28,7 @@ body#loginbody {
 }
 
 #loginpage {
-	background-color: pink;
+	background-color: #FEFEF2;
 	font-family: Futura, sans-serif;
 }
 
@@ -47,6 +52,8 @@ footer {
 	margin: 0;
 }
 
-.tablehead {
 
+#map-canvas { 
+	height: 250px;
+	width: 100%;
 }

@@ -1,15 +1,5 @@
- <!DOCTYPE html>
-<html>
-    <head>
-        <title>Milles-Bornes</title>
-    <link rel="stylesheet" href="/static/css/bootstrap.css" type="text/css"/>
-    <link href="/static/css/bootstrap-responsive.css" rel="stylesheet"/>
-    <link rel="stylesheet" href="/static/css/mycss.css" type="text/css"/>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-    <script type="text/javascript" src="/static/js/bootstrap.js"></script>
-    </head>
- 
- <body id="loginbody">
+{% extends "pregame_base.html" %}
+{% block body %}
 
 <div id="background">
 <div class="page-header">
@@ -72,20 +62,21 @@
 </div>
 
 <!-- Button to trigger modal -->
-<a href="#myModal" role="button" class="btn" data-toggle="modal">Learn the Rules!</a>
+<a href="#myModal" role="button" class="btn btn-success" data-toggle="modal">Learn the Rules!</a>
  
 <!-- Modal -->
 <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <button type="btn btn-success" class="close" data-dismiss="modal" aria-hidden="true">×</button>
     <h3 id="myModalLabel">Mille Bornes</h3>
   </div>
   <div class="modal-body">
-    <p>One fine body…</p>
+    <p>The premise of Mille Bornes is that the players are in a road race.</p> 
+    <p>Each race—or hand—is 1000 miles long. The first player to travel this distance by putting down miles cards wins.</p>
+    <p>Mille Bornes is played with a special deck of cards. Hover over the card to see what it does. There are hazard, remedy, immunity, and distance cards. Each hazard is corrected by a corresponding remedy, and is actually prevented from happening in the first place by a corresponding immunity. The target distance is reached by playing distance cards. Play hazard cards to stop your opponent until they can put down safety or immunity cards and continue.</p>
   </div>
   <div class="modal-footer">
-    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-    <button class="btn btn-primary">Save changes</button>
+    <button class="btn btn-success" data-dismiss="modal" aria-hidden="true">Let's Play!</button>
   </div>
 </div>
 
@@ -97,5 +88,4 @@
 
 
 </div>
-    </body>
-</html>
+{% endblock %}

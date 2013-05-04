@@ -82,6 +82,7 @@ def choose_game():
 	for position in player_games:
 		position = position.position
 		positions.append(position)
+
 	return render_template("new_game.html", gameplay = game_ids, positions = positions)
 
 #View to create a new game, shuffles cards and deals player in at position 2.

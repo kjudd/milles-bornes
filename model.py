@@ -118,7 +118,6 @@ class Usergame(Base):
 	game = relationship("Game", backref = backref("games", order_by=id))
 	player = relationship("Player", backref = backref("players", order_by=id))
 
-
 class Game(Base):
 
 	__tablename__ = "games"
