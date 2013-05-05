@@ -197,16 +197,16 @@ def await_turn():
     names = model.Usergame.cards_in_hand(usergame, dealt_list)
     player_miles = usergame.miles
     player_status = model.Usergame.check_status(usergame)
-    player_speed = model.Usergame.check_speed(usergame)
+    player_limit = model.Usergame.check_speed(usergame)
     player_immunity = model.Usergame.check_immunities(usergame)
     op_miles = other_players[0].miles
     op_status = model.Usergame.check_status(other_players[0])
-    op_speed = model.Usergame.check_speed(other_players[0])
+    op_limit = model.Usergame.check_speed(other_players[0])
     op_immunity = model.Usergame.check_immunities(other_players[0])
     return render_template("await_turn.html", names=names, channel=channel, pusher_key=app.config['PUSHER_APP_KEY'],
-                           player_miles=player_miles, player_status=player_status,    player_speed=player_speed,
+                           player_miles=player_miles, player_status=player_status, player_limit=player_limit,
                            player_immunity=player_immunity, op_miles=op_miles, op_status=op_status,
-                           op_speed=op_speed, op_immunity=op_immunity)
+                           op_limit=op_limit, op_immunity=op_immunity)
 
 
 #View to display player options from hand.
@@ -339,11 +339,11 @@ def gameplay():
         player_immunity = model.Usergame.check_immunities(usergame)
         op_miles = other_players[0].miles
         op_status = model.Usergame.check_status(other_players[0])
-        op_speed = model.Usergame.check_speed(other_players[0])
+        op_limit = model.Usergame.check_speed(other_players[0])
         op_immunity = model.Usergame.check_immunities(other_players[0])
     return render_template("gameplay.html", names=names, valid_moves=valid_moves,
                            player_miles=player_miles, player_status=player_status, player_limit=player_speed,
-                           op_miles=op_miles, op_status=op_status, op_speed=op_speed,
+                           op_miles=op_miles, op_status=op_status, op_limit=op_limit,
                            player_immunity=player_immunity, op_immunity=op_immunity)
 
 
