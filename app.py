@@ -91,7 +91,7 @@ def choose_game():
 				game_tied.append(game_id)
 			else:
 				game_lost.append(game_id)
-	return render_template("new_game.html", awaiting_player = awaiting_player, game_won = game_won,
+	return render_template("choose_game.html", awaiting_player = awaiting_player, game_won = game_won,
 		game_lost = game_lost, game_tied = game_tied, current_game = current_game)
 
 #View to create a new game, shuffles cards and deals player in at position 2.

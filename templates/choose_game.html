@@ -1,0 +1,56 @@
+{% extends "pregame_base.html" %}
+{% block body %}
+<div class="game-center">
+  <div class="page-header">
+    <h1 id="header">My Games</h1>
+  </div>
+
+  <div id="game-actions">
+    <form method="POST" action="/create_game">
+    	<button class="btn btn-info" type="submit" name="create game">Play new game!</button> 
+    </form>
+
+    <form method="POST" action="/join_game">
+    	<button class="btn btn-info" type="submit" name="join game">Join game!</button> 
+    </form>
+  </div>
+
+  <h2>Resume Game</h2>
+  <ul class="game-list">
+  {% for game in current_game %}
+    <li><a href="/resume_game/{{game}}">Game {{ game }}</a></li>
+  {% endfor %}
+  </ul>
+
+  <h2>Awaiting Players</h2>
+  <ul class="game-list">
+  {% for game in awaiting_player %}
+    <li class="awaiting-players">Game {{ game }}</li>
+  {% endfor %}
+  </ul>
+
+  <h2>Games Won</h2>
+  <ul class="game-list">
+  {% for game in game_won %}
+    <li><a href="/resume_game/{{game}}">Game {{ game }}</a></li>
+  {% endfor %}
+  </ul>
+
+  <h2>Games Tied</h2>
+  <ul class="game-list">
+  {% for game in game_tied %}
+    <li><a href="/resume_game/{{game}}">Game {{ game }}</a></li>
+  {% endfor %}
+  </ul>
+
+  <h2>Games Lost</h2>
+  <ul class="game-list">
+  {% for game in game_lost %}
+    <li><a href="/resume_game/{{game}}">Game {{ game }}</a></li>
+  {% endfor %}
+  </ul>
+
+  <p><a href="{{ url_for('logout') }}">Logout</a></p>
+</div>
+
+{% endblock %}

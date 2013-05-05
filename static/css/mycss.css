@@ -39,6 +39,17 @@ body {
 	font-family: Futura, sans-serif;
 }
 
+.game-list {
+	list-style: none;
+	margin-left: 10px;
+	font-size: 18px;
+}
+
+#game-actions form {
+	float: left;
+	margin-right: 10px;
+}
+
 #cardfan {
 	display: inline-block;
 }
@@ -78,7 +89,7 @@ footer {
 	width: 100%;
 }
 
-#awaitingplayers {
+.awaiting-players {
 	color:  #737373;
 }
 
