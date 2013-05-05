@@ -19,7 +19,7 @@ app.config.from_object('config')
 lm = LoginManager()
 lm.setup_app(app)
 
-p = pusher.Pusher(app_id=config_pusher.app_id, key=config_pusher.app_key, secret=config_pusher.app_secret)
+p = pusher.Pusher(app_id=app.config['PUSHER_APP_ID'], key=app.config['PUSHER_APP_KEY'], secret=app.config['PUSHER_APP_SECRET'])
 
 #Login manager setup for Flask-Login.
 @lm.user_loader
@@ -33,13 +33,13 @@ def login():
 	if current_user is not None and current_user.is_authenticated():
 		return redirect("/choose_game")
 
-	#Sign up view to add player id, name, email, and hashed password to database.	
+	#Sign up view to add player id, name, email, and hashed password to database.
 	form = forms.RegistrationForm()
 	if form.validate_on_submit():
 		email_query = model.session.query(model.Player).filter_by(email = form.email.data).all()
 		hashed = bcrypt.hashpw(form.password.data, bcrypt.gensalt(10))
 		if not email_query:
-			player = model.Player(id = None, name = form.name.data, email = form.email.data, 
+			player = model.Player(id = None, name = form.name.data, email = form.email.data,
 				password = hashed)
 			model.session.add(player)
 			model.session.commit()
@@ -110,10 +110,10 @@ def create_game():
 	model.session.commit()
 	string_hand = str(dealt_cards)
 	player_hand = string_hand.strip('[]')
-	usergame = model.Usergame(id = None, game_id = game.id, user_id = player, 
+	usergame = model.Usergame(id = None, game_id = game.id, user_id = player,
 		position = 2, hand = player_hand, miles = 0, immunities = 2222,
-		can_be_stopped = 0, can_have_flat = 0, can_have_low_gas = 0, 
-		can_have_speed_limit = 0, can_be_in_accident = 0, speed_limit = 0, 
+		can_be_stopped = 0, can_have_flat = 0, can_have_low_gas = 0,
+		can_have_speed_limit = 0, can_be_in_accident = 0, speed_limit = 0,
 		can_go = 0, has_flat = 0, has_accident = 0, gas_empty = 0, game_status = 0)
 	model.session.add(usergame)
 	model.session.commit()
@@ -141,16 +141,16 @@ def join_new_game(id):
 	session["game"] = id
 	player = current_user.id
 	game = model.session.query(model.Game).get(id)
-	string_cards = eval(game.draw_pile)	
+	string_cards = eval(game.draw_pile)
 	deal_cards = list(string_cards)
 	dealt_cards = deal_cards[-6: ]
 	deal_cards[-6: ] = []
 	string_hand = str(dealt_cards)
 	player_hand = string_hand.strip('[]')
-	usergame = model.Usergame(id = None, game_id = game.id, user_id = player, 
+	usergame = model.Usergame(id = None, game_id = game.id, user_id = player,
 		position = 1, hand = player_hand, miles = 0, immunities = 2222,
-		can_be_stopped = 0, can_have_flat = 0, can_have_low_gas = 0, 
-		can_have_speed_limit = 0, can_be_in_accident = 0, speed_limit = 0, 
+		can_be_stopped = 0, can_have_flat = 0, can_have_low_gas = 0,
+		can_have_speed_limit = 0, can_be_in_accident = 0, speed_limit = 0,
 		can_go = 0, has_flat = 0, has_accident = 0, gas_empty = 0, game_status = 0)
 	model.session.add(usergame)
 	string_draw = str(deal_cards)
@@ -212,7 +212,7 @@ def await_turn():
 	op_speed = model.Usergame.check_speed(other_players[0])
 	op_immunity = model.Usergame.check_immunities(other_players[0])
 	return render_template("await_turn.html", names = names, channel = channel,
-		player_miles = player_miles, player_status = player_status,	player_speed = player_speed, 
+		player_miles = player_miles, player_status = player_status,	player_speed = player_speed,
 		player_immunity = player_immunity, op_miles = op_miles, op_status = op_status,
 		op_speed = op_speed, op_immunity = op_immunity)
 
@@ -238,7 +238,7 @@ def gameplay():
 	dealt_list = dealt_tuple.split(',')
 	names = model.Usergame.cards_in_hand(usergame, dealt_list)
 	valid_moves = []
- 
+
 	def check_hazards(card, other_player):
 		if card.action == "out of gas":
 			if other_player.can_have_low_gas == 1 and str(other_player.immunities)[0] != "1":
@@ -325,7 +325,7 @@ def gameplay():
 				valid_moves.append(add_card)
 		elif card.type == "safety":
 			valid_moves.append(card)
-		
+
 		player_miles = usergame.miles
 		player_status = model.Usergame.check_status(usergame)
 		player_speed = model.Usergame.check_speed(usergame)
@@ -334,7 +334,7 @@ def gameplay():
 		op_status = model.Usergame.check_status(other_players[0])
 		op_speed = model.Usergame.check_speed(other_players[0])
 		op_immunity = model.Usergame.check_immunities(other_players[0])
-	return render_template("gameplay.html", names = names, valid_moves = valid_moves, 
+	return render_template("gameplay.html", names = names, valid_moves = valid_moves,
 		miles = player_miles, status = player_status, limit = player_speed,
 		op_miles = op_miles, op_status = op_status, op_speed = op_speed,
 		player_immunity = player_immunity, op_immunity = op_immunity)
@@ -435,7 +435,7 @@ def play_card(id):
 	if card.type == "miles":
 		integer = int(card.action)
 		usergame.miles += integer
-		model.session.commit() 
+		model.session.commit()
 		if usergame.miles == 1000:
 			p[str_game].trigger('winner', {})
 			usergame.game_status += 1
