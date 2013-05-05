@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship, backref
 
-ENGINE = create_engine("postgresql://localhost/milles-bornes.db", echo = False)
+ENGINE = create_engine("postgres://kfmpqphxvivyzg:9u9R11smEE6pOQIfT5W1lFaFAc@ec2-54-235-155-40.compute-1.amazonaws.com:5432/d316t9aqsl61k1", echo = False)
 session = scoped_session(sessionmaker(bind=ENGINE, autocommit = False, autoflush = False))
 
 
