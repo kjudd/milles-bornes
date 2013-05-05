@@ -35,7 +35,7 @@ class Player(Base):
 		return unicode(self.id)
 
 	def __repr__(self):
-		return '<User %r>' % (self.nickname)
+		return '<User %r>' % (self.name)
 
 
 class Card(Base):
@@ -114,7 +114,7 @@ class Usergame(Base):
 			current_immunities.append("Right of Way")
 		return current_immunities
 
-		
+
 
 	game = relationship("Game", backref = backref("games", order_by=id))
 	player = relationship("Player", backref = backref("players", order_by=id))
