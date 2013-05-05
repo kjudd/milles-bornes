@@ -391,30 +391,30 @@ def join_game():
             continue
     return render_template("open_games.html", games=open_games)
 
-    #View to discard selected card if it is not a valid move.
-    @app.route("/discard/<int:id>", methods=["POST", "GET"])
-    @login_required
-    def discard(id):
-        player_id = current_user.id
-        game = session.get("game")
-        str_game = str(game)
-        p[str_game].trigger('an_event', {"played": "discard"})
-        usergame = model.session.query(model.Usergame).filter_by(user_id=player_id, game_id=game).all()
-        usergame = usergame[0]
-        other_players = model.session.query(model.Usergame).filter(and_(model.Usergame.game_id == game, model.Usergame.position != usergame.position)).all()
-        other_player = other_players[0]
-        hand = usergame.hand
-        hand = str(hand)
-        hand = hand.split(',')
-        for card in hand:
-            if int(card) == id:
-                hand.remove(card)
-        new_hand = ','.join(hand)
-        usergame.hand = new_hand
-        usergame.position = 2
-        other_player.position = 1
-        model.session.commit()
-        return redirect("/turn")
+#View to discard selected card if it is not a valid move.
+@app.route("/discard/<int:id>", methods=["POST", "GET"])
+@login_required
+def discard(id):
+    player_id = current_user.id
+    game = session.get("game")
+    str_game = str(game)
+    p[str_game].trigger('an_event', {"played": "discard"})
+    usergame = model.session.query(model.Usergame).filter_by(user_id=player_id, game_id=game).all()
+    usergame = usergame[0]
+    other_players = model.session.query(model.Usergame).filter(and_(model.Usergame.game_id == game, model.Usergame.position != usergame.position)).all()
+    other_player = other_players[0]
+    hand = usergame.hand
+    hand = str(hand)
+    hand = hand.split(',')
+    for card in hand:
+        if int(card) == id:
+            hand.remove(card)
+    new_hand = ','.join(hand)
+    usergame.hand = new_hand
+    usergame.position = 2
+    other_player.position = 1
+    model.session.commit()
+    return redirect("/turn")
 
 
 #View to evaluate players selected card and update database with new move.
