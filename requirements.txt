@@ -20,6 +20,7 @@ chardet==2.1.1
 decorator==3.4.0
 ## FIXME: could not find svn URL in dependency_links for this package:
 flup==1.0.3.dev-20110405
+gunicorn==0.17.4
 psycopg2==2.5
 pusher==0.7
 py-bcrypt==0.3
