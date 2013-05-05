@@ -20,44 +20,59 @@
   <h1 id="header">Mille Bornes</h1>
 </div>
 
-<h1 id="loginhead">Login</h1>
-<form id="Login" method = "POST" action = "/">
-	{{form.hidden_tag()}}
-    <div>{{ form.email.label }} {{ form.email() }}
-    </div>
+<h3>Login</h3>
+<form id="Login" method="POST" action="/">
+  {{form.hidden_tag()}}
+  
+  <div>
+    {{ form.email.label }}
+    {{ form.email(placeholder="kristen@gmail.com") }}
     {% for error in form.errors.email %}
-    <span style="color: red;">[{{error}}]</span>
-    {% endfor %}<br>
-    <div>{{ form.password.label}} {{ form.password() }}
-    </div>
+      <span style="color: red;">[{{error}}]</span><br>
+    {% endfor %}
+  </div>
+
+  <div>
+    {{ form.password.label }}
+    {{ form.password(placeholder="Password") }}
     {% for error in form.errors.password %}
-    <span style="color: red;">[{{error}}]</span>
-    {% endfor %}<br>
-    <button class = "btn btn-info" type = "submit">Submit</button>  
+      <span style="color: red;">[{{error}}]</span><br>
+    {% endfor %}
+  </div>
+
+  <button class="btn btn-info" type="submit">Submit</button>  
 </form>
 
 
-<h1 id="signuphead">Sign Up</h1>
-<form id = "signup" method="POST" action="/">
+<h3>Sign Up</h3>
+<form id="signup" method="POST" action="/">
 	{{form.hidden_tag()}}
-    <div>{{ form.name.label }} {{ form.name() }}
-    </div>
+  <div>
+    {{ form.name.label }}
+    {{ form.name(placeholder="Kristen") }}
     {% for error in form.errors.name %}
-    <span style="color: red;">[{{error}}]</span>
-    {% endfor %}<br>
-    <div>{{ form.email.label}} {{ form.email() }}
+      <span style="color: red;">[{{error}}]</span><br>
+    {% endfor %}
+  </div>
+    
+  <div>
+    {{ form.email.label }}
+    {{ form.email(placeholder="kristen@gmail.com") }}
     {% for error in form.errors.email %}
-    </div>
-    <span style="color: red;">[{{error}}]</span>
-    {% endfor %}<br>
-    <div>{{ form.password.label }} {{ form.password() }}
-    </div>
+      <span style="color: red;">[{{error}}]</span><br>
+    {% endfor %}
+  </div>
+
+  <div>
+    {{ form.password.label }}
+    {{ form.password(placeholder="Password") }}
     {% for error in form.errors.password %}
-    <span style="color: red;">[{{error}}]</span>
-    {% endfor %}<br>
-    <button class = "btn btn-info" type = "submit">Submit</button>  
+      <span style="color: red;">[{{error}}]</span><br>
+    {% endfor %}
+  </div>
+
+  <button class="btn btn-info" type="submit">Submit</button>  
 </form>
-</div>
 
 <!-- Button to trigger modal -->
 <a href="#myModal" role="button" class="btn btn-info" data-toggle="modal">Learn the Rules!</a>
