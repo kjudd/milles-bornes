@@ -1,9 +1,6 @@
 {% extends "pregame_base.html" %}
 {% block body %}
 
-<div class="background">
-
-
 {% with messages = get_flashed_messages() %}
   {% if messages %}
     <div class="alert alert-error alert-block">
@@ -16,91 +13,83 @@
   {% endif %}
 {% endwith %}
 
-
-<div id="loginpage" class="center">
-<div class="page-header">
-  <h1 id="header">Mille Bornes</h1>
-</div>
-
-<h3>Login</h3>
-<form id="Login" method="POST" action="/">
-  {{form.hidden_tag()}}
-  
-  <div>
-    {{ form.email.label }}
-    {{ form.email(placeholder="kristen@gmail.com") }}
-    {% for error in form.errors.email %}
-      <span style="color: red;">[{{error}}]</span><br>
-    {% endfor %}
+<div id="login-page" class="center">
+  <div class="page-header">
+    <h1 id="header">Mille Bornes</h1>
   </div>
+  <a href="#rulesModal" id="rules-button" role="button" class="btn btn-mini" data-toggle="modal">Learn the Rules!</a>
 
-  <div>
-    {{ form.password.label }}
-    {{ form.password(placeholder="Password") }}
-    {% for error in form.errors.password %}
-      <span style="color: red;">[{{error}}]</span><br>
-    {% endfor %}
-  </div>
-
-  <button class="btn btn-info" type="submit">Submit</button>  
-</form>
-
-
-<h3>Sign Up</h3>
-<form id="signup" method="POST" action="/">
-	{{form.hidden_tag()}}
-  <div>
-    {{ form.name.label }}
-    {{ form.name(placeholder="Kristen") }}
-    {% for error in form.errors.name %}
-      <span style="color: red;">[{{error}}]</span><br>
-    {% endfor %}
-  </div>
+  <h3>Login</h3>
+  <form method="POST" action="/">
+    {{form.hidden_tag()}}
     
-  <div>
-    {{ form.email.label }}
-    {{ form.email(placeholder="kristen@gmail.com") }}
-    {% for error in form.errors.email %}
-      <span style="color: red;">[{{error}}]</span><br>
-    {% endfor %}
+    <div>
+      {{ form.email.label }}
+      {{ form.email(placeholder="kristen@gmail.com") }}
+      {% for error in form.errors.email %}
+        <span style="color: red;">[{{error}}]</span><br>
+      {% endfor %}
+    </div>
+
+    <div>
+      {{ form.password.label }}
+      {{ form.password(placeholder="Password") }}
+      {% for error in form.errors.password %}
+        <span style="color: red;">[{{error}}]</span><br>
+      {% endfor %}
+    </div>
+
+    <button class="btn btn-info" type="submit">Submit</button>  
+  </form>
+
+
+  <h3>Sign Up</h3>
+  <form method="POST" action="/">
+  	{{form.hidden_tag()}}
+    <div>
+      {{ form.name.label }}
+      {{ form.name(placeholder="Kristen") }}
+      {% for error in form.errors.name %}
+        <span style="color: red;">[{{error}}]</span><br>
+      {% endfor %}
+    </div>
+      
+    <div>
+      {{ form.email.label }}
+      {{ form.email(placeholder="kristen@gmail.com") }}
+      {% for error in form.errors.email %}
+        <span style="color: red;">[{{error}}]</span><br>
+      {% endfor %}
+    </div>
+
+    <div>
+      {{ form.password.label }}
+      {{ form.password(placeholder="Password") }}
+      {% for error in form.errors.password %}
+        <span style="color: red;">[{{error}}]</span><br>
+      {% endfor %}
+    </div>
+
+    <button class="btn btn-info" type="submit">Submit</button>  
+  </form>
+
+  <div id="rulesModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="rulesModalLabel" aria-hidden="true">
+    <div class="modal-header">
+      <button type="btn btn-success" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+      <h3 id="rulesModalLabel">Mille Bornes</h3>
+    </div>
+    <div class="modal-body">
+      <p>The premise of Mille Bornes is that the players are in a road race.</p> 
+      <p>Each race—or hand—is 1000 miles long. The first player to travel this distance by putting down miles cards wins.</p>
+      <p>Mille Bornes is played with a special deck of cards. Hover over the card to see what it does. There are hazard, remedy, immunity, and distance cards. Each hazard is corrected by a corresponding remedy, and is actually prevented from happening in the first place by a corresponding immunity. The target distance is reached by playing distance cards. Play hazard cards to stop your opponent until they can put down safety or immunity cards and continue.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-info" data-dismiss="modal" aria-hidden="true">Let's Play!</button>
+    </div>
   </div>
 
-  <div>
-    {{ form.password.label }}
-    {{ form.password(placeholder="Password") }}
-    {% for error in form.errors.password %}
-      <span style="color: red;">[{{error}}]</span><br>
-    {% endfor %}
-  </div>
-
-  <button class="btn btn-info" type="submit">Submit</button>  
-</form>
-
-<!-- Button to trigger modal -->
-<a href="#myModal" role="button" class="btn btn-info" data-toggle="modal">Learn the Rules!</a>
- 
-<!-- Modal -->
-<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-header">
-    <button type="btn btn-success" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3 id="myModalLabel">Mille Bornes</h3>
-  </div>
-  <div class="modal-body">
-    <p>The premise of Mille Bornes is that the players are in a road race.</p> 
-    <p>Each race—or hand—is 1000 miles long. The first player to travel this distance by putting down miles cards wins.</p>
-    <p>Mille Bornes is played with a special deck of cards. Hover over the card to see what it does. There are hazard, remedy, immunity, and distance cards. Each hazard is corrected by a corresponding remedy, and is actually prevented from happening in the first place by a corresponding immunity. The target distance is reached by playing distance cards. Play hazard cards to stop your opponent until they can put down safety or immunity cards and continue.</p>
-  </div>
-  <div class="modal-footer">
-    <button class="btn btn-info" data-dismiss="modal" aria-hidden="true">Let's Play!</button>
-  </div>
-</div>
-
-
-<footer>
-    &copy; 2013
-</footer>
-
-
-
+  <footer>
+      &copy; 2013
+  </footer>
 </div>
 {% endblock %}

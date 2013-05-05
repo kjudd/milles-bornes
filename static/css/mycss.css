@@ -21,6 +21,11 @@ body.loginbody {
 	font-family: Futura, sans-serif;
 }
 
+#rules-button {
+	width: 98%;
+	margin-top: -50px;
+}
+
 #header {
 	display: inline-block;
 	margin: 0 auto; 
@@ -42,7 +47,7 @@ body.loginbody {
 	display: inline-block;
 }
 
-#loginpage {
+#login-page {
 	background-color: #FEFEF2;
 	font-family: Futura, sans-serif;
 }
