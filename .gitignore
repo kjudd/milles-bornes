@@ -1,4 +1,5 @@
 config.py
 config_pusher.py
 config.pyc
-config_pusher.pyc*.pyc
+config_pusher.pyc
+*.pyc
