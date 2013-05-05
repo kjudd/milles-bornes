@@ -12,6 +12,10 @@ body.loginbody {
 	background: url(/static/img/ravenna.png)
 }
 
+.alert-block {
+	margin: 10px;
+}
+
 .page-header{
 	background-color: #FEFEF2;
 	font-family: Futura, sans-serif;
