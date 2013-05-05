@@ -10,7 +10,11 @@
   <ul id="hand-display" class="baraja-container">
     {% for card in names %}
       <li>
-        <a href="/discard/{{card.id}}" {% if card not in valid_moves %}class="invalid-move"{% endif %}>
+        {% if card not in valid_moves %}
+          <a href="/discard/{{card.id}}"class="invalid-move">
+        {% else %}
+          <a href="/play_card/{{card.id}}">
+        {% endif %}
           <img src="/static/img/cards/{{ card.image }}" width="150" height="225" alt="{{ card.action }}" title="{{ card.action }}">
         </a>
       </li>
