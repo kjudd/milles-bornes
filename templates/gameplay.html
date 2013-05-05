@@ -19,7 +19,7 @@ $(document).ready(function () {
 <!-- forces user to draw if cards less than 7 -->
 {% if names|length < 7 %}
 <form method = "POST" action = "/draw">
-	<input type = "submit" name = "draw" value = "DRAW!"> 
+	<input type = "submit" name = "draw" value = "DRAW!">
 </form>
 
 
@@ -37,9 +37,9 @@ function confirm_alert(node) {
 <ul id="baraja-el" class="baraja-container">
 {% for card in names %}
 {% if card in valid_moves %}
-<li><a href= "/play_card/{{card.id}}"> {{ card.image|safe }} </a></li>
+<li><a href= "/play_card/{{card.id}}"> <img src="/static/img/cards/{{ card.image }}" width="150" height="225" alt="{{ card.action }}" title="{{ card.action }}"> </a></li>
 {% else %}
-<li><a href= "/discard/{{card.id}}" onclick="return confirm_alert(this);"> {{card.image|safe}} </a></li>
+<li><a href= "/discard/{{card.id}}" onclick="return confirm_alert(this);"> <img src="/static/img/cards/{{ card.image }}" width="150" height="225" alt="{{ card.action }}" title="{{ card.action }}"> </a></li>
 {% endif %}
 {% endfor %}
 {% endif %}
@@ -62,19 +62,19 @@ function confirm_alert(node) {
 
 <tbody>
 <tr class="success">
-<td>Miles</td> 
+<td>Miles</td>
 <td>{{miles}}</td>
 <td>{{op_miles}}</td>
 </tr>
 
 <tr class="success">
-<td>Current Status</td> 
+<td>Current Status</td>
 <td>{{status}}</td>
 <td>{{op_status}}</td>
 </tr>
 
 <tr class="success">
-<td>Current Speed Limit</td> 
+<td>Current Speed Limit</td>
 <td>{{limit}}</td>
 <td>{{op_speed}}</td>
 </tr>

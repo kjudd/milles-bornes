@@ -2,7 +2,7 @@
 {% block body %}
 <script src="http://js.pusher.com/2.0/pusher.min.js"></script>
 <script>
-var pusher = new Pusher('cacfdd42bc51bc59cfb6'); 
+var pusher = new Pusher('cacfdd42bc51bc59cfb6');
 </script>
 <p><h1>Awaiting Turn</h1></p>
 
@@ -23,7 +23,7 @@ channel.bind('tied', function(data) {
 <script>
 $(document).ready(function () {
 	var baraja = $('#baraja-el').baraja();
-	 
+
 	    baraja.fan( {
 	        speed: 500,
 	        easing: 'ease-out',
@@ -31,7 +31,7 @@ $(document).ready(function () {
 	        direction: 'right',
 	        origin: {x: 50, y: 475},
 	        center: true,
-	        translation: 0	 
+	        translation: 0
 	} );
 });
 
@@ -40,7 +40,7 @@ $(document).ready(function () {
 <h2>My Hand:</h2>
 <ul id="baraja-el" class="baraja-container">
 {% for card in names %}
-<li>{{ card.image|safe }}</li>
+<li><img src="/static/img/cards/{{ card.image }}" width="150" height="225" alt="{{ card.action }}" title="{{ card.action }}"></li>
 {% endfor %}
 </ul>
 
@@ -61,19 +61,19 @@ $(document).ready(function () {
 
 <tbody>
 <tr class="success">
-<td>Miles</td> 
+<td>Miles</td>
 <td>{{player_miles}}</td>
 <td>{{op_miles}}</td>
 </tr>
 
 <tr class="success">
-<td>Current Status</td> 
+<td>Current Status</td>
 <td>{{player_status}}</td>
 <td>{{op_status}}</td>
 </tr>
 
 <tr class="success">
-<td>Current Speed Limit</td> 
+<td>Current Speed Limit</td>
 <td>{{player_speed}}</td>
 <td>{{op_speed}}</td>
 </tr>
