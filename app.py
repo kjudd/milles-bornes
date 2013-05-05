@@ -211,7 +211,7 @@ def await_turn():
 	op_status = model.Usergame.check_status(other_players[0])
 	op_speed = model.Usergame.check_speed(other_players[0])
 	op_immunity = model.Usergame.check_immunities(other_players[0])
-	return render_template("await_turn.html", names = names, channel = channel,
+	return render_template("await_turn.html", names = names, channel = channel, pusher_key = app.config['PUSHER_APP_KEY'],
 		player_miles = player_miles, player_status = player_status,	player_speed = player_speed,
 		player_immunity = player_immunity, op_miles = op_miles, op_status = op_status,
 		op_speed = op_speed, op_immunity = op_immunity)

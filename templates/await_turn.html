@@ -18,7 +18,7 @@
 
 <script>
   $(document).ready(function () {
-    var pusher = new Pusher('cacfdd42bc51bc59cfb6');
+    var pusher = new Pusher('{{pusher_key}}');
     var channel = pusher.subscribe({{channel|tojson|safe}});
     channel.bind('an_event', function(data) {
         alert('Your opponent has played: ' + data['played']); window.location = "/turn"
