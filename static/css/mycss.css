@@ -1,30 +1,47 @@
+body {
+	background: url(/static/img/ravenna.png)
+}
+
 a {
 	color: #49afcd;
 }
 
-#draw-button {
-	width: 200px;
-	display:block;
-	margin: 50px auto;
+.page-header {
+	background-color: #FEFEF2;
+	font-family: Futura, sans-serif;
 }
 
-div.center {
-	width: 200px;
-	margin: 0 auto;
-	padding: 50px;
+footer {
+	color: #ccc;
+	font-size: 12px;
+	text-align: center;
 }
 
-body {
-	background: url(/static/img/ravenna.png)
+.container {
+	background-color: #FFFFFD;
 }
 
 .alert-block {
 	margin: 10px;
 }
 
-.page-header{
+.choose-game-link {
+	margin: 10px;
+	display: inline-block;
+}
+
+.inset {
+	padding-left: 8px;
+}
+
+/** login page css **/
+
+#login-page {
 	background-color: #FEFEF2;
 	font-family: Futura, sans-serif;
+	width: 200px;
+	margin: 0 auto;
+	padding: 50px;
 }
 
 #rules-button {
@@ -32,18 +49,7 @@ body {
 	margin-top: -50px;
 }
 
-#header {
-	display: inline-block;
-	margin: 0 auto; 
-}
-
-.game-center {
-	width: 300px;
-	margin: 0 auto;
-	padding: 50px;
-	background-color: #FEFEF2;
-	font-family: Futura, sans-serif;
-}
+/** game chooser css */
 
 .game-list {
 	list-style: none;
@@ -56,55 +62,29 @@ body {
 	margin-right: 10px;
 }
 
-#cardfan {
-	display: inline-block;
+#games-awaiting-players {
+	color:  #737373;
 }
 
-#position {
-	display: inline-block;
-}
+/** gameplay css **/
 
-#login-page {
+.game-center {
+	width: 300px;
+	margin: 0 auto;
+	padding: 50px;
 	background-color: #FEFEF2;
 	font-family: Futura, sans-serif;
 }
 
-#afterphoto {
-	background-color: blue
+#draw-button {
+	width: 200px;
+	display:block;
+	margin: 50px auto;
 }
-
-#card {
-	height: 150px;
-}
-
-footer {
-	text-style: gray;
-	font-size: small;
-	width: 50px;
-	margin: 0 auto;
-}
-
-.tablelist {
-	list-style: none;
-	margin: 0;
-}
-
 
 #map-canvas { 
 	height: 250px;
 	width: 100%;
-}
-
-.awaiting-players {
-	color:  #737373;
-}
-
-.inset {
-	padding-left: 8px;
-}
-
-.container {
-	background-color:  #FFFFFD;
 }
 
 #hand-display {
@@ -116,7 +96,3 @@ footer {
   margin: -50px 0 30px 0;
 }
 
-.choose-game-link {
-	margin: 10px;
-	display: inline-block;
-}

@@ -2,7 +2,7 @@
 {% block body %}
 <div class="game-center">
   <div class="page-header">
-    <h1 id="header">My Games</h1>
+    <h1>My Games</h1>
   </div>
 
   <div id="game-actions">
@@ -23,9 +23,9 @@
   </ul>
 
   <h2>Awaiting Players</h2>
-  <ul class="game-list">
+  <ul id="games-awaiting-players" class="game-list">
   {% for game in awaiting_player %}
-    <li class="awaiting-players">Game {{ game }}</li>
+    <li>Game {{ game }}</li>
   {% endfor %}
   </ul>
 
