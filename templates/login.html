@@ -1,11 +1,7 @@
 {% extends "pregame_base.html" %}
 {% block body %}
 
-<div id="background">
-<div class="page-header">
-  <h1>Mille Bornes <small>Travel 1,000 Miles!</small></h1>
-</div>
-
+<div class="background">
 
 
 {% with messages = get_flashed_messages() %}
@@ -20,7 +16,9 @@
 
 
 <div id="loginpage" class="center">
-
+<div class="page-header">
+  <h1 id="header">Mille Bornes</h1>
+</div>
 
 <h1 id="loginhead">Login</h1>
 <form id="Login" method = "POST" action = "/">
@@ -35,7 +33,7 @@
     {% for error in form.errors.password %}
     <span style="color: red;">[{{error}}]</span>
     {% endfor %}<br>
-    <button class = "btn btn-success" type = "submit">Submit</button>  
+    <button class = "btn btn-info" type = "submit">Submit</button>  
 </form>
 
 
@@ -57,12 +55,12 @@
     {% for error in form.errors.password %}
     <span style="color: red;">[{{error}}]</span>
     {% endfor %}<br>
-    <button class = "btn btn-success" type = "submit">Submit</button>  
+    <button class = "btn btn-info" type = "submit">Submit</button>  
 </form>
 </div>
 
 <!-- Button to trigger modal -->
-<a href="#myModal" role="button" class="btn btn-success" data-toggle="modal">Learn the Rules!</a>
+<a href="#myModal" role="button" class="btn btn-info" data-toggle="modal">Learn the Rules!</a>
  
 <!-- Modal -->
 <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -76,7 +74,7 @@
     <p>Mille Bornes is played with a special deck of cards. Hover over the card to see what it does. There are hazard, remedy, immunity, and distance cards. Each hazard is corrected by a corresponding remedy, and is actually prevented from happening in the first place by a corresponding immunity. The target distance is reached by playing distance cards. Play hazard cards to stop your opponent until they can put down safety or immunity cards and continue.</p>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-success" data-dismiss="modal" aria-hidden="true">Let's Play!</button>
+    <button class="btn btn-info" data-dismiss="modal" aria-hidden="true">Let's Play!</button>
   </div>
 </div>
 

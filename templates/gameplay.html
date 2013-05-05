@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block body %}
 <!-- card fan function  -->
+<div class=
 <script>
 $(document).ready(function () {
 	var baraja = $('#baraja-el').baraja();
@@ -25,7 +26,8 @@ $(document).ready(function () {
 
 <!-- available cards, not clickable -->
 {% else %}
-<h1>My Hand:</h1>
+<h1>Click Card to Play</h1>
+<h2>My Hand:</h2>
 
 <script type="text/javascript">
 function confirm_alert(node) {
@@ -99,6 +101,7 @@ function confirm_alert(node) {
 {% endfor %}
 </tbody>
 </table>
+<p><strong>Track your progress as you get closer to Paris!</strong><p>
 
 <!-- google map -->
     <script type="text/javascript">

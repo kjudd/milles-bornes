@@ -71,19 +71,28 @@ def login():
 def choose_game():
 	player = current_user.id
 	player_games = model.session.query(model.Usergame).filter_by(user_id = player).all()
-	game_ids = []
+	awaiting_player = []
+	game_won = []
+	game_lost = []
+	game_tied = []
+	current_game = []
 	for game in player_games:
 		str_game = str(game.game.draw_pile)
 		split_game = str_game.split(',')
-		if len(split_game) < 100:
-			games = game.game_id
-			game_ids.append(games)
-	positions = []
-	for position in player_games:
-		position = position.position
-		positions.append(position)
-
-	return render_template("new_game.html", gameplay = game_ids, positions = positions)
+		game_id = game.game_id
+		if len(split_game) == 100:
+			awaiting_player.append(game_id)
+		elif len(split_game) <= 94:
+			if game.game_status == 0:
+				current_game.append(game_id)
+			elif game.game_status == 1:
+				game_won.append(game_id)
+			elif game.game_status == 2:
+				game_tied.append(game_id)
+			else:
+				game_lost.append(game_id)
+	return render_template("new_game.html", awaiting_player = awaiting_player, game_won = game_won,
+		game_lost = game_lost, game_tied = game_tied, current_game = current_game)
 
 #View to create a new game, shuffles cards and deals player in at position 2.
 @app.route("/create_game", methods = ["POST"])
@@ -105,10 +114,10 @@ def create_game():
 		position = 2, hand = player_hand, miles = 0, immunities = 2222,
 		can_be_stopped = 0, can_have_flat = 0, can_have_low_gas = 0, 
 		can_have_speed_limit = 0, can_be_in_accident = 0, speed_limit = 0, 
-		can_go = 0, has_flat = 0, has_accident = 0, gas_empty = 0)
+		can_go = 0, has_flat = 0, has_accident = 0, gas_empty = 0, game_status = 0)
 	model.session.add(usergame)
 	model.session.commit()
-	return redirect("/turn")
+	return render_template("await_players.html")
 
 #View to display list of joinable games
 #Joinable games have a certain number of cards in draw pile, currently 2 player
@@ -142,7 +151,7 @@ def join_new_game(id):
 		position = 1, hand = player_hand, miles = 0, immunities = 2222,
 		can_be_stopped = 0, can_have_flat = 0, can_have_low_gas = 0, 
 		can_have_speed_limit = 0, can_be_in_accident = 0, speed_limit = 0, 
-		can_go = 0, has_flat = 0, has_accident = 0, gas_empty = 0)
+		can_go = 0, has_flat = 0, has_accident = 0, gas_empty = 0, game_status = 0)
 	model.session.add(usergame)
 	string_draw = str(deal_cards)
 	draw_deck = string_draw.strip('[]')
@@ -187,6 +196,8 @@ def await_turn():
 		return redirect("/loser")
 	draw_pile = usergame.game.draw_pile
 	if len(draw_pile) == 0:
+		usergame.game_status += 2
+		other_player.game_status += 2
 		return redirect("/tie_game")
 	dealt_cards = usergame.hand
 	dealt_tuple = str(dealt_cards)
@@ -427,6 +438,8 @@ def play_card(id):
 		model.session.commit() 
 		if usergame.miles == 1000:
 			p[str_game].trigger('winner', {})
+			usergame.game_status += 1
+			other_player.game_status += 3
 			return redirect("/winner")
 		else:
 			p[str_game].trigger('an_event', {"played" : card.action })

@@ -69,6 +69,7 @@ class Usergame(Base):
 	has_flat = Column(Integer(1), nullable = True)
 	has_accident = Column(Integer(1), nullable = True)
 	gas_empty = Column(Integer(1), nullable = True)
+	game_status = Column(Integer(1), nullable = True)
 
 	#Method displays the action of a card in player hand.
 	def cards_in_hand(self, player_hand):

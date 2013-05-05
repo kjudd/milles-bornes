@@ -1,3 +1,7 @@
+a {
+	color: #49afcd;
+}
+
 div.center {
 	width: 200px;
 	margin: 0 auto;
@@ -5,18 +9,25 @@ div.center {
 }
 
 body.loginbody {
-	background: url(/static/img/197.gif)
+	background: url(/static/img/ravenna.png)
+}
+
+.page-header{
+	background-color: #FEFEF2;
+	font-family: Futura, sans-serif;
 }
 
 #header {
-	margin: 0 auto;
+	display: inline-block;
+	margin: 0 auto; 
 }
 
-#gamecenter {
+.gamecenter {
 	width: 300px;
 	margin: 0 auto;
 	padding: 50px;
 	background-color: #FEFEF2;
+	font-family: Futura, sans-serif;
 }
 
 #cardfan {
@@ -56,4 +67,12 @@ footer {
 #map-canvas { 
 	height: 250px;
 	width: 100%;
+}
+
+#awaitingplayers {
+	color:  #737373;
+}
+
+.container {
+	background-color:  #FFFFFD;
 }
