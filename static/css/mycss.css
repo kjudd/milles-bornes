@@ -8,7 +8,7 @@ div.center {
 	padding: 50px;
 }
 
-body.loginbody {
+body {
 	background: url(/static/img/ravenna.png)
 }
 
@@ -31,7 +31,7 @@ body.loginbody {
 	margin: 0 auto; 
 }
 
-.gamecenter {
+.game-center {
 	width: 300px;
 	margin: 0 auto;
 	padding: 50px;
