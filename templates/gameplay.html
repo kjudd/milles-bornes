@@ -1,170 +1,52 @@
 {% extends "base.html" %}
 {% block body %}
-<!-- card fan function  -->
-<script>
-$(document).ready(function () {
-	var baraja = $('#baraja-el').baraja();
-	    baraja.fan( {
-	        speed: 500,
-	        easing: 'ease-out',
-	        range: 40,
-	        direction: 'right',
-	        origin: {x: 50, y: 475},
-	        center: true,
-	        translation: 0
-	    } );
-});
-</script>
 
 <!-- forces user to draw if cards less than 7 -->
 {% if names|length < 7 %}
-<form method = "POST" action = "/draw">
-	<input type = "submit" name = "draw" value = "DRAW!">
-</form>
-
-
-<!-- available cards, not clickable -->
+  <form method="POST" action="/draw">
+  	<input type="submit" name="draw" class="btn-large btn btn-success" id="draw-button" value="DRAW!">
+  </form>
 {% else %}
-<h1>Click Card to Play</h1>
-<h2>My Hand:</h2>
+  <ul id="hand-display" class="baraja-container">
+    {% for card in names %}
+      <li>
+        <a href="/discard/{{card.id}}" {% if card not in valid_moves %}class="invalid-move"{% endif %}>
+          <img src="/static/img/cards/{{ card.image }}" width="150" height="225" alt="{{ card.action }}" title="{{ card.action }}">
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
 
-<script type="text/javascript">
-function confirm_alert(node) {
-    return confirm("Do you want to discard this card?");
-}
+  <div class="play-instruction">
+    <strong>This is your hand.</strong>
+    Click to play a card.
+  </div>
+{% endif %}
+
+{% include "shared/scoreboard.html" %}
+<p class="inset"><strong>Track your progress as you get closer to Paris!</strong><p>
+{% include "shared/map.html" %}
+<a class="choose-game-link btn btn-small" href="{{ url_for('choose_game') }}">&laquo; Back to your games</a>
+
+
+<script>
+  $(document).ready(function () {
+    $('#hand-display').baraja().fan({
+      speed: 500,
+      easing: 'ease-out',
+      range: 40,
+      direction: 'right',
+      origin: {x: 50, y: 475},
+      center: true,
+      translation: 0
+    });
+
+    $('#hand-display').delegate('a.invalid-move', 'click', function (event) {
+      if (!confirm("Do you want to discard this card?")) {
+        event.preventDefault();
+      }
+    });
+  });
 </script>
-
-<ul id="baraja-el" class="baraja-container">
-{% for card in names %}
-{% if card in valid_moves %}
-<li><a href= "/play_card/{{card.id}}"> <img src="/static/img/cards/{{ card.image }}" width="150" height="225" alt="{{ card.action }}" title="{{ card.action }}"> </a></li>
-{% else %}
-<li><a href= "/discard/{{card.id}}" onclick="return confirm_alert(this);"> <img src="/static/img/cards/{{ card.image }}" width="150" height="225" alt="{{ card.action }}" title="{{ card.action }}"> </a></li>
-{% endif %}
-{% endfor %}
-{% endif %}
-</ul>
-
-<br>
-
-<!-- scoreboard table -->
-
-<table class="table table-hover">
-<thead class="tablehead">
-<tr>
-
-<td><b>Scoreboard</b></td>
-<td><b>Your Score</b></td>
-<td><b>Opponent Score</b></td>
-
-</tr>
-</thead>
-
-<tbody>
-<tr class="success">
-<td>Miles</td>
-<td>{{miles}}</td>
-<td>{{op_miles}}</td>
-</tr>
-
-<tr class="success">
-<td>Current Status</td>
-<td>{{status}}</td>
-<td>{{op_status}}</td>
-</tr>
-
-<tr class="success">
-<td>Current Speed Limit</td>
-<td>{{limit}}</td>
-<td>{{op_speed}}</td>
-</tr>
-
-<tr class="success">
-	<td>Current Immunities</td>
-<td>
-<ul class="tablelist">
-{% for immunity in player_immunity %}
-<li class="tableitem">{{immunity}}</li>
-{% endfor %}
-</ul>
-</td>
-
-<td>
-	<ul class="tablelist">
-{% for immunity in op_immunity %}
-<li>{{immunity}}</li>
-</ul>
-</td>
-
-{% endfor %}
-</tbody>
-</table>
-<p><strong>Track your progress as you get closer to Paris!</strong><p>
-
-<!-- google map -->
-    <script type="text/javascript">
-        var poly;
-        var geodesic;
-        var map;
-      	var marker1;
-      function initialize() {
-
-        var mapOptions = {
-          center: new google.maps.LatLng(48.8742, 2.3470),
-          zoom: 5,
-          // maxZoom: 8,
-          // minZoom: 8,
-          mapTypeId: google.maps.MapTypeId.ROADMAP
-        };
-        var map = new google.maps.Map(document.getElementById("map-canvas"),
-            mapOptions);
-
-         map.controls[google.maps.ControlPosition.TOP_CENTER].push(
-      		document.getElementById('info'));
-
-        var offset
-		var heading1 = new google.maps.LatLng(48.8742, 2.3470);
-		var heading2 = new google.maps.LatLng(48.2088, 16.3726);
-
-		heading = google.maps.geometry.spherical.computeHeading(heading1, heading2);
-		console.log(heading)
-    miles = 1000 - {{miles}}
-		offset = new google.maps.geometry.spherical.computeOffset(heading1, miles, heading, 3956.6);
-		console.log(offset.lat);
-
-		marker1 = new google.maps.Marker({
-    		map: map,
-    		draggable: true,
-    		position: new google.maps.LatLng(48.8742, 2.3470)
-  			});
-
-
-		marker2 = new google.maps.Marker({
-    		map: map,
-    		draggable: true,
-    		position: offset
-  			});
-
-		distance = new google.maps.geometry.spherical.computeDistanceBetween(marker2.position, marker1.position, 3956.6);
-
-		console.log(distance)
-
-		var coordinates = [heading1, offset];
-		var path = new google.maps.Polyline({
- 			path: coordinates,
-  			strokeColor: "#FF0000",
-  			strokeOpacity: 1.0,
-  			strokeWeight: 2
-			});
-
-		}
-
-
-      google.maps.event.addDomListener(window, 'load', initialize);
-    </script>
-   <div id="map-canvas"></div>
-
-
-<p><a href="{{ url_for('choose_game') }}">Back to your games</a></p>
 
 {% endblock %}

@@ -335,7 +335,7 @@ def gameplay():
 		op_speed = model.Usergame.check_speed(other_players[0])
 		op_immunity = model.Usergame.check_immunities(other_players[0])
 	return render_template("gameplay.html", names = names, valid_moves = valid_moves,
-		miles = player_miles, status = player_status, limit = player_speed,
+		player_miles = player_miles, player_status = player_status, player_limit = player_speed,
 		op_miles = op_miles, op_status = op_status, op_speed = op_speed,
 		player_immunity = player_immunity, op_immunity = op_immunity)
 

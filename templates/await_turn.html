@@ -1,169 +1,45 @@
 {% extends "base.html" %}
 {% block body %}
-<script src="http://js.pusher.com/2.0/pusher.min.js"></script>
-<script>
-var pusher = new Pusher('cacfdd42bc51bc59cfb6');
-</script>
-<p><h1>Awaiting Turn</h1></p>
 
-
-<script>
-var channel = pusher.subscribe({{channel|tojson|safe}});
-channel.bind('an_event', function(data) {
-    alert('Your opponent has played: ' + data['played']); window.location = "/turn"
-});
-channel.bind('winner', function(data) {
-	alert('Your opponent has won!'); window.location = "/loser"
-});
-channel.bind('tied', function(data) {
-	alert('This game is a draw!'); window.location = "/tie_game"
-});
-</script>
-
-<script>
-$(document).ready(function () {
-	var baraja = $('#baraja-el').baraja();
-
-	    baraja.fan( {
-	        speed: 500,
-	        easing: 'ease-out',
-	        range: 40,
-	        direction: 'right',
-	        origin: {x: 50, y: 475},
-	        center: true,
-	        translation: 0
-	} );
-});
-
-</script>
-
-<h2>My Hand:</h2>
-<ul id="baraja-el" class="baraja-container">
-{% for card in names %}
-<li><img src="/static/img/cards/{{ card.image }}" width="150" height="225" alt="{{ card.action }}" title="{{ card.action }}"></li>
-{% endfor %}
+<ul id="hand-display" class="baraja-container">
+  {% for card in names %}
+    <li><img src="/static/img/cards/{{ card.image }}" width="150" height="225" alt="{{ card.action }}" title="{{ card.action }}"></li>
+  {% endfor %}
 </ul>
 
+<div class="play-instruction">
+  <strong>Waiting for opponent to play.</strong>
+</div>
 
-<br>
-<br>
+{% include "shared/scoreboard.html" %}
+<p class="inset"><strong>Track your progress as you get closer to Paris!</strong><p>
+{% include "shared/map.html" %}
+<a class="choose-game-link btn btn-small" href="{{ url_for('choose_game') }}">&laquo; Back to your games</a>
 
-<table class="table table-hover">
-<thead class="tablehead">
-<tr>
+<script>
+  $(document).ready(function () {
+    var pusher = new Pusher('cacfdd42bc51bc59cfb6');
+    var channel = pusher.subscribe({{channel|tojson|safe}});
+    channel.bind('an_event', function(data) {
+        alert('Your opponent has played: ' + data['played']); window.location = "/turn"
+    });
+    channel.bind('winner', function(data) {
+      alert('Your opponent has won!'); window.location = "/loser"
+    });
+    channel.bind('tied', function(data) {
+      alert('This game is a draw!'); window.location = "/tie_game"
+    });
 
-<td><b>Scoreboard</b></td>
-<td><b>Your Score</b></td>
-<td><b>Opponent Score</b></td>
-
-</tr>
-</thead>
-
-<tbody>
-<tr class="success">
-<td>Miles</td>
-<td>{{player_miles}}</td>
-<td>{{op_miles}}</td>
-</tr>
-
-<tr class="success">
-<td>Current Status</td>
-<td>{{player_status}}</td>
-<td>{{op_status}}</td>
-</tr>
-
-<tr class="success">
-<td>Current Speed Limit</td>
-<td>{{player_speed}}</td>
-<td>{{op_speed}}</td>
-</tr>
-
-<tr class="success">
-	<td>Current Immunities</td>
-<td>
-<ul class="tablelist">
-{% for immunity in player_immunity %}
-<li class="tableitem">{{immunity}}</li>
-{% endfor %}
-</ul>
-</td>
-
-<td>
-	<ul class="tablelist">
-{% for immunity in op_immunity %}
-<li>{{immunity}}</li>
-{% endfor %}
-</ul>
-</td>
-</tbody>
-</table>
-
-<p><strong>Track your progress as you get closer to Paris!</strong><p>
-
-<!-- google map -->
-    <script type="text/javascript">
-        var poly;
-        var geodesic;
-        var map;
-      	var marker1;
-      function initialize() {
-
-        var mapOptions = {
-          center: new google.maps.LatLng(48.8742, 2.3470),
-          zoom: 5,
-          // maxZoom: 8,
-          // minZoom: 8,
-          mapTypeId: google.maps.MapTypeId.ROADMAP
-        };
-        var map = new google.maps.Map(document.getElementById("map-canvas"),
-            mapOptions);
-
-         map.controls[google.maps.ControlPosition.TOP_CENTER].push(
-      		document.getElementById('info'));
-
-        var offset
-		var heading1 = new google.maps.LatLng(48.8742, 2.3470);
-		var heading2 = new google.maps.LatLng(48.2088, 16.3726);
-
-		heading = google.maps.geometry.spherical.computeHeading(heading1, heading2);
-		console.log(heading)
-    	miles = 1000 - {{player_miles}}
-		offset = new google.maps.geometry.spherical.computeOffset(heading1, miles, heading, 3956.6);
-		console.log(offset.lat);
-
-		marker1 = new google.maps.Marker({
-    		map: map,
-    		draggable: true,
-    		position: new google.maps.LatLng(48.8742, 2.3470)
-  			});
-
-
-		marker2 = new google.maps.Marker({
-    		map: map,
-    		draggable: true,
-    		position: offset
-  			});
-
-		distance = new google.maps.geometry.spherical.computeDistanceBetween(marker2.position, marker1.position, 3956.6);
-
-		console.log(distance)
-
-		var coordinates = [heading1, offset];
-		var path = new google.maps.Polyline({
- 			path: coordinates,
-  			strokeColor: "#FF0000",
-  			strokeOpacity: 1.0,
-  			strokeWeight: 2
-			});
-
-		}
-
-
-      google.maps.event.addDomListener(window, 'load', initialize);
-    </script>
-   <div id="map-canvas"></div>
-
-<br>
-<p><a href="{{ url_for('choose_game') }}">Back to your games</a></p>
+    $('#hand-display').baraja().fan({
+      speed: 500,
+      easing: 'ease-out',
+      range: 40,
+      direction: 'right',
+      origin: {x: 50, y: 475},
+      center: true,
+      translation: 0
+    });
+  });
+</script>
 
 {% endblock %}

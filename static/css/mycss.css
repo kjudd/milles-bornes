@@ -2,6 +2,12 @@ a {
 	color: #49afcd;
 }
 
+#draw-button {
+	width: 200px;
+	display:block;
+	margin: 50px auto;
+}
+
 div.center {
 	width: 200px;
 	margin: 0 auto;
@@ -93,6 +99,24 @@ footer {
 	color:  #737373;
 }
 
+.inset {
+	padding-left: 8px;
+}
+
 .container {
 	background-color:  #FFFFFD;
+}
+
+#hand-display {
+	margin: 50px auto 100px auto;
+}
+
+.play-instruction {	
+  text-align: center;
+  margin: -50px 0 30px 0;
+}
+
+.choose-game-link {
+	margin: 10px;
+	display: inline-block;
 }

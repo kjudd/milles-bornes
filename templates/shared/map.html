@@ -1,0 +1,39 @@
+<div id="map-canvas"></div>
+<script>
+  $(document).ready(function () {
+    var mapOptions = {
+      center: new google.maps.LatLng(48.8742, 2.3470),
+      zoom: 5,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+
+    var map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+
+    map.controls[google.maps.ControlPosition.TOP_CENTER].push(document.getElementById('info'));
+
+    var heading1 = new google.maps.LatLng(48.8742, 2.3470);
+    var heading2 = new google.maps.LatLng(48.2088, 16.3726);
+    var heading = google.maps.geometry.spherical.computeHeading(heading1, heading2);
+    var miles = 1000 - {{player_miles}}
+    var offset = new google.maps.geometry.spherical.computeOffset(heading1, miles, heading, 3956.6);
+
+    var marker1 = new google.maps.Marker({
+      map: map,
+      draggable: false,
+      position: new google.maps.LatLng(48.8742, 2.3470)
+    });
+
+    var marker2 = new google.maps.Marker({
+      map: map,
+      draggable: false,
+      position: offset
+    });
+
+    var path = new google.maps.Polyline({
+      path: [heading1, offset],
+      strokeColor: "#FF0000",
+      strokeOpacity: 1.0,
+      strokeWeight: 2
+    });
+  })
+</script>

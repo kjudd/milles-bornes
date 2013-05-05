@@ -1,0 +1,47 @@
+<table class="table table-hover">
+  <thead class="tablehead">
+    <tr>
+      <td><b>Scoreboard</b></td>
+      <td><b>Your Score</b></td>
+      <td><b>Opponent Score</b></td>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr class="success">
+      <td>Miles</td>
+      <td>{{player_miles}}</td>
+      <td>{{op_miles}}</td>
+    </tr>
+
+    <tr class="success">
+      <td>Current Status</td>
+      <td>{{player_status}}</td>
+      <td>{{op_status}}</td>
+    </tr>
+
+    <tr class="success">
+      <td>Current Speed Limit</td>
+      <td>{{player_limit}}</td>
+      <td>{{op_speed}}</td>
+    </tr>
+
+    <tr class="success">
+      <td>Current Immunities</td>
+      <td>
+        <ul class="tablelist">
+        {% for immunity in player_immunity %}
+          <li class="tableitem">{{immunity}}</li>
+        {% endfor %}
+        </ul>
+      </td>
+      <td>
+        <ul class="tablelist">
+        {% for immunity in op_immunity %}
+          <li>{{immunity}}</li>
+        {% endfor %}
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
