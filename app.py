@@ -232,102 +232,18 @@ def gameplay():
     names = model.Usergame.cards_in_hand(usergame, dealt_list)
     valid_moves = []
 
-    def check_hazards(card, other_player):
-        if card.action == "out of gas":
-            if other_player.can_have_low_gas == 1 and str(other_player.immunities)[0] != "3":
-                return card
-            else:
-                return None
-        elif card.action == "flat tire":
-            if other_player.can_have_flat == 1 and str(other_player.immunities)[1] != "3":
-                return card
-            else:
-                return None
-        elif card.action == "accident":
-            if other_player.can_be_in_accident == 1 and str(other_player.immunities)[2] != "3":
-                return card
-            else:
-                return None
-        elif card.action == "speed limit":
-            if other_player.can_have_speed_limit == 1 and str(other_player.immunities)[3] != "3":
-                return card
-            else:
-                return None
-        elif card.action == "stop":
-            if other_player.can_be_stopped == 1 and str(other_player.immunities)[3] != "3":
-                return card
-            else:
-                return None
-
-    def check_miles(card):
-        if usergame.can_go == 1:
-            if int(card.action) == 200:
-                if usergame.miles <= 800 and usergame.speed_limit < 50:
-                    return card
-                else:
-                    return None
-            elif int(card.action) == 100:
-                if usergame.miles <= 900 and usergame.speed_limit < 50:
-                    return card
-                else:
-                    return None
-            elif int(card.action) == 75:
-                if usergame.miles <= 925 and usergame.speed_limit < 50:
-                    return card
-                else:
-                    return None
-            elif int(card.action) == 50:
-                if usergame.miles <= 950:
-                    return card
-                else:
-                    return None
-            elif int(card.action) == 25:
-                if usergame.miles <= 975:
-                    return card
-                else:
-                    return None
-        else:
-            return None
-
-    def check_remedy(card):
-        if card.action == "gasoline":
-            if usergame.gas_empty == 1:
-                return card
-            else:
-                return None
-        elif card.action == "spare tire":
-            if usergame.has_flat == 1:
-                return card
-            else:
-                return None
-        elif card.action == "repairs":
-            if usergame.has_accident == 1:
-                return card
-            else:
-                return None
-        elif card.action == "end of limit":
-            if usergame.speed_limit == 50:
-                return card
-        elif card.action == "roll":
-            if usergame.can_go == 0:
-                if usergame.gas_empty == 0 and usergame.has_flat == 0 and usergame.has_accident == 0:
-                    return card
-            else:
-                return None
-
     for card in names:
         if card.type == "hazard":
             for player in other_players:
-                add_card = check_hazards(card, player)
+                add_card = model.Usergame.check_hazards(usergame, card, player)
                 if add_card != 0:
                     valid_moves.append(add_card)
-                    break
         elif card.type == "miles":
-            add_card = check_miles(card)
+            add_card = model.Usergame.check_miles(usergame, card)
             if add_card != 0:
                 valid_moves.append(add_card)
         elif card.type == "remedy":
-            add_card = check_remedy(card)
+            add_card = model.Usergame.check_remedy(usergame, card)
             if add_card != 0:
                 valid_moves.append(add_card)
         elif card.type == "safety":
@@ -439,26 +355,6 @@ def play_card(id):
     new_hand = ','.join(split_hand)
     usergame.hand = new_hand
 
-    def update_turns():
-        usergame.position = 2
-        other_player.position = 1
-
-    def stop_everything():
-        other_player.can_be_stopped = 0
-        other_player.can_have_flat = 0
-        other_player.can_have_low_gas = 0
-        other_player.can_have_speed_limit = 0
-        other_player.can_be_in_accident = 0
-        other_player.can_go = 0
-
-    def start_everything():
-        usergame.can_be_stopped = 1
-        usergame.can_have_flat = 1
-        usergame.can_have_low_gas = 1
-        usergame.can_have_speed_limit = 1
-        usergame.can_be_in_accident = 1
-        usergame.can_go = 1
-
     if card.type == "miles":
         integer = int(card.action)
         usergame.miles += integer
@@ -470,7 +366,7 @@ def play_card(id):
             return redirect("/winner")
         else:
             p[str_game].trigger('an_event', {"played": card.action})
-            update_turns()
+            model.Usergame.update_turns(usergame, other_player)
             model.session.commit()
             return redirect("/turn")
     elif card.type == "safety":
@@ -485,27 +381,27 @@ def play_card(id):
             usergame.immunities += 10
         if card.action == "right of way":
             usergame.speed_limit = 0
-            start_everything()
+            model.Usergame.start_everything(usergame)
             usergame.immunities += 1
         #extra turn, no update
     elif card.type == "hazard":
         if card.action == "out of gas":
-            stop_everything()
+            model.Usergame.stop_everything(usergame, other_player)
             other_player.gas_empty = 1
         if card.action == "flat tire":
-            stop_everything()
+            model.Usergame.stop_everything(usergame, other_player)
             other_player.has_flat = 1
         if card.action == "accident":
-            stop_everything()
+            model.Usergame.stop_everything(usergame, other_player)
             other_player.has_accident = 1
         if card.action == "stop":
-            stop_everything()
+            model.Usergame.stop_everything(usergame, other_player)
         if card.action == "speed limit":
             other_player.speed_limit = 50
-        update_turns()
+        model.Usergame.update_turns(usergame, other_player)
     elif card.type == "remedy":
         if card.action == "roll":
-            start_everything()
+            model.Usergame.start_everything(usergame)
         if card.action == "gasoline":
             usergame.gas_empty = 0
         if card.action == "spare tire":
@@ -514,7 +410,7 @@ def play_card(id):
             usergame.has_accident = 0
         if card.action == "end of limit":
             usergame.speed_limit = 0
-        update_turns()
+        model.Usergame.update_turns(usergame, other_player)
     p[str_game].trigger('an_event', {"played": card.action})
     model.session.commit()
     return redirect("/turn")
