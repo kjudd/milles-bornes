@@ -182,7 +182,7 @@ def await_turn():
     other_players = model.session.query(model.Usergame).filter(and_(model.Usergame.game_id == game, model.Usergame.position != usergame.position)).all()
     other_player = other_players[0]
     draw_pile = usergame.game.draw_pile
-    if usergame.miles == 1000:
+    if usergame.miles >= 1000:
         return redirect("/winner")
     elif other_players[0].miles == 1000:
         return redirect("/loser")
@@ -234,27 +234,27 @@ def gameplay():
 
     def check_hazards(card, other_player):
         if card.action == "out of gas":
-            if other_player.can_have_low_gas == 1 and str(other_player.immunities)[0] != "1":
+            if other_player.can_have_low_gas == 1 and str(other_player.immunities)[0] != "3":
                 return card
             else:
                 return None
         elif card.action == "flat tire":
-            if other_player.can_have_flat == 1 and str(other_player.immunities)[1] != "1":
+            if other_player.can_have_flat == 1 and str(other_player.immunities)[1] != "3":
                 return card
             else:
                 return None
         elif card.action == "accident":
-            if other_player.can_be_in_accident == 1 and str(other_player.immunities)[2] != "1":
+            if other_player.can_be_in_accident == 1 and str(other_player.immunities)[2] != "3":
                 return card
             else:
                 return None
         elif card.action == "speed limit":
-            if other_player.can_have_speed_limit == 1 and str(other_player.immunities)[3] != "1":
+            if other_player.can_have_speed_limit == 1 and str(other_player.immunities)[3] != "3":
                 return card
             else:
                 return None
         elif card.action == "stop":
-            if other_player.can_be_stopped == 1 and str(other_player.immunities)[3] != "1":
+            if other_player.can_be_stopped == 1 and str(other_player.immunities)[3] != "3":
                 return card
             else:
                 return None

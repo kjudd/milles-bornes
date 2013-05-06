@@ -1,6 +1,24 @@
 {% extends "base.html" %}
 {% block body %}
 
+
+<div id="played" class="alert alert-info" style="display: none">
+  <a class="close">×</a>
+  <strong>Your opponent played <span id="card"></span></strong> Ready to continue playing?
+  <a class="btn btn-info" href="/turn">Play!</a>
+</div>
+
+<div id="lost" class="alert alert-info" style="display: none">
+  <strong>Your opponent has won!</strong>
+  <a class="btn btn-info" href="/choose_game">Return to Games</a>
+</div>
+
+<div id="draw" class="alert alert-info" style="display: none">
+  <strong>This game is a draw!</strong>
+  <a class="btn btn-info" href="/choose_game">Return to Games</a>
+</div>
+
+
 <ul id="hand-display" class="baraja-container">
   {% for card in names %}
     <li><img src="/static/img/cards/{{ card.image }}" width="150" height="225" alt="{{ card.action }}" title="{{ card.action }}"></li>
@@ -21,13 +39,14 @@
     var pusher = new Pusher('{{pusher_key}}');
     var channel = pusher.subscribe({{channel|tojson|safe}});
     channel.bind('an_event', function(data) {
-        alert('Your opponent has played: ' + data['played']); window.location = "/turn"
+        $("#played").show();
+        $("#card").html(data['played']);
     });
     channel.bind('winner', function(data) {
-      alert('Your opponent has won!'); window.location = "/loser"
+        $("#lost").show();
     });
     channel.bind('tied', function(data) {
-      alert('This game is a draw!'); window.location = "/tie_game"
+        $("#draw").show();
     });
 
     $('#hand-display').baraja().fan({

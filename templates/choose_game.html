@@ -30,23 +30,23 @@
   </ul>
 
   <h2>Games Won</h2>
-  <ul class="game-list">
+  <ul id="games-won" class="game-list">
   {% for game in game_won %}
-    <li><a href="/resume_game/{{game}}">Game {{ game }}</a></li>
+    <li>Game {{ game }}</li>
   {% endfor %}
   </ul>
 
   <h2>Games Tied</h2>
-  <ul class="game-list">
+  <ul id="games-tied" class="game-list">
   {% for game in game_tied %}
-    <li><a href="/resume_game/{{game}}">Game {{ game }}</a></li>
+    <li>Game {{ game }}</li>
   {% endfor %}
   </ul>
 
   <h2>Games Lost</h2>
-  <ul class="game-list">
+  <ul id="games-lost" class="game-list">
   {% for game in game_lost %}
-    <li><a href="/resume_game/{{game}}">Game {{ game }}</a></li>
+    <li>Game {{ game }}</li>
   {% endfor %}
   </ul>
 
