@@ -306,7 +306,7 @@ def gameplay():
             else:
                 return None
         elif card.action == "end of limit":
-            if usergame.speed_limit == 1:
+            if usergame.speed_limit == 50:
                 return card
         elif card.action == "roll":
             if usergame.can_go == 0:
@@ -475,12 +475,17 @@ def play_card(id):
             return redirect("/turn")
     elif card.type == "safety":
         if card.action == "extra tank":
+            usergame.gas_empty = 0
             usergame.immunities += 1000
         if card.action == "puncture proof":
+            usergame.has_flat = 0
             usergame.immunities += 100
         if card.action == "driving ace":
+            usergame.has_accident = 0
             usergame.immunities += 10
         if card.action == "right of way":
+            usergame.speed_limit = 0
+            start_everything()
             usergame.immunities += 1
         #extra turn, no update
     elif card.type == "hazard":
