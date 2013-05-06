@@ -3,7 +3,9 @@
   $(document).ready(function () {
     var mapOptions = {
       center: new google.maps.LatLng(48.8742, 2.3470),
-      zoom: 5,
+      zoom: 4,
+      minZoom: 4,
+      maxZoom: 5,
       mapTypeId: google.maps.MapTypeId.ROADMAP
     };
 
@@ -21,29 +23,32 @@
     var offset = new google.maps.geometry.spherical.computeOffset(heading1, miles, heading, 3956.6);
     var other_offset = new google.maps.geometry.spherical.computeOffset(heading1, other_miles, other_heading, 3956.6);
 
+    var iconBase1 = 'static/img/finishline.png';
     var marker1 = new google.maps.Marker({
       map: map,
       draggable: false,
+      icon: iconBase1,
+      title: "Finish Line!",
       position: new google.maps.LatLng(48.8742, 2.3470)
     });
 
+    var iconBase2 = 'static/img/sportscargreen.png';
     var marker2 = new google.maps.Marker({
       map: map,
       draggable: false,
+      icon: iconBase2,
+      title: "Your Car",
       position: offset
     });
 
+    var iconBase3 = 'static/img/sportscarred.png';
     var marker3 = new google.maps.Marker({
         map: map,
         draggable: false,
+        icon: iconBase3,
+        title: "Your Opponent",
         position: other_offset
     })
 
-    var path = new google.maps.Polyline({
-      path: [heading1, offset],
-      strokeColor: "#FF0000",
-      strokeOpacity: 1.0,
-      strokeWeight: 2
-    });
   })
 </script>
