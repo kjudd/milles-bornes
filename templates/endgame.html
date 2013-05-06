@@ -1,0 +1,8 @@
+{% extends "pregame_base.html" %}
+{% block body %}
+<div class="game-center">
+  <h1>{{endgame_text}}</h1>
+  <a class="choose-game-link btn btn-small" href="{{ url_for('choose_game') }}">&laquo; Back to your games</a>
+</div>
+
+{% endblock %}

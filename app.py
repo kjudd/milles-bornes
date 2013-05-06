@@ -273,9 +273,8 @@ def draw():
     usergame = usergame[0]
     game_object = model.session.query(model.Game).get(game)
     draw_pile = game_object.draw_pile
-    if len(draw_pile) == 0:
+    if len(draw_pile) == 90:
         p[str(game)].trigger('tied', {})
-        return redirect("/tie_game")
     string_draw = str(draw_pile)
     deal_cards = string_draw.split(',')
     dealt_cards = deal_cards[-1]
@@ -418,17 +417,20 @@ def play_card(id):
 
 @app.route("/winner")
 def winner():
-    return "You Won!"
+    endgame_text = "You won! Great job!"
+    return render_template("endgame.html", endgame_text = endgame_text)
 
 
 @app.route("/loser")
 def loser():
-    return "You lost :("
+    endgame_text = "Sorry, your opponent won. Try again!"
+    return render_template("endgame.html", endgame_text = endgame_text)
 
 
 @app.route("/tie_game")
 def tie_game():
-    return "Out of cards! This game is a draw."
+    endgame_text = "You're out of cards. This game is a draw. Try again!"
+    return render_template("endgame.html", endgame_text = endgame_text)
 
 
 @app.route('/logout')
