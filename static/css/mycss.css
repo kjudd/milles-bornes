@@ -8,7 +8,7 @@ a {
 
 .page-header {
 	background-color: #FEFEF2;
-	font-family: Futura, sans-serif;
+	font-family: Helvetica, sans-serif;
 }
 
 footer {
@@ -38,7 +38,7 @@ footer {
 
 #login-page {
 	background-color: #FEFEF2;
-	font-family: Futura, sans-serif;
+	font-family: Helvetica, sans-serif;
 	width: 200px;
 	margin: 0 auto;
 	padding: 50px;
@@ -73,7 +73,7 @@ footer {
 	margin: 0 auto;
 	padding: 50px;
 	background-color: #FEFEF2;
-	font-family: Futura, sans-serif;
+	font-family: Helvetica, sans-serif;
 }
 
 #draw-button {
