@@ -13,9 +13,13 @@
 
     var heading1 = new google.maps.LatLng(48.8742, 2.3470);
     var heading2 = new google.maps.LatLng(48.2088, 16.3726);
+    var heading3 = new google.maps.LatLng(53.9000, 27.5667);
     var heading = google.maps.geometry.spherical.computeHeading(heading1, heading2);
+    var other_heading = google.maps.geometry.spherical.computeHeading(heading1, heading3);
     var miles = 1000 - {{player_miles}}
+    var other_miles = 1000 - {{op_miles}}
     var offset = new google.maps.geometry.spherical.computeOffset(heading1, miles, heading, 3956.6);
+    var other_offset = new google.maps.geometry.spherical.computeOffset(heading1, other_miles, other_heading, 3956.6);
 
     var marker1 = new google.maps.Marker({
       map: map,
@@ -28,6 +32,12 @@
       draggable: false,
       position: offset
     });
+
+    var marker3 = new google.maps.Marker({
+        map: map,
+        draggable: false,
+        position: other_offset
+    })
 
     var path = new google.maps.Polyline({
       path: [heading1, offset],
