@@ -306,6 +306,7 @@ def join_game():
             continue
     return render_template("open_games.html", games=open_games)
 
+
 #View to discard selected card if it is not a valid move.
 @app.route("/discard/<int:id>", methods=["POST", "GET"])
 @login_required
@@ -418,19 +419,19 @@ def play_card(id):
 @app.route("/winner")
 def winner():
     endgame_text = "You won! Great job!"
-    return render_template("endgame.html", endgame_text = endgame_text)
+    return render_template("endgame.html", endgame_text=endgame_text)
 
 
 @app.route("/loser")
 def loser():
     endgame_text = "Sorry, your opponent won. Try again!"
-    return render_template("endgame.html", endgame_text = endgame_text)
+    return render_template("endgame.html", endgame_text=endgame_text)
 
 
 @app.route("/tie_game")
 def tie_game():
     endgame_text = "You're out of cards. This game is a draw. Try again!"
-    return render_template("endgame.html", endgame_text = endgame_text)
+    return render_template("endgame.html", endgame_text=endgame_text)
 
 
 @app.route('/logout')
