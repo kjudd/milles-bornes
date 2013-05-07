@@ -80,29 +80,29 @@ class Usergame(Base):
             cards_in_hand.append(card_info)
         return cards_in_hand
 
-    def check_status(usergame):
-        if usergame.can_go == 1:
+    def check_status(self):
+        if self.can_go == 1:
             status = "Going"
-        elif usergame.has_flat == 1:
+        elif self.has_flat == 1:
             status = "Flat Tire"
-        elif usergame.has_accident == 1:
+        elif self.has_accident == 1:
             status = "Accident"
-        elif usergame.gas_empty == 1:
+        elif self.gas_empty == 1:
             status = "Gas Empty"
         else:
             status = "Stopped"
         return status
 
-    def check_speed(usergame):
-        if usergame.speed_limit == 0:
+    def check_speed(self):
+        if self.speed_limit == 0:
             limit = "None"
         else:
-            limit = usergame.speed_limit
+            limit = self.speed_limit
         return limit
 
-    def check_immunities(usergame):
+    def check_immunities(self):
         current_immunities = []
-        string = str(usergame.immunities)
+        string = str(self.immunities)
 
         if string[0] == "3":
             current_immunities.append("Extra Tank")
@@ -115,7 +115,7 @@ class Usergame(Base):
 
         return current_immunities
 
-    def check_hazards(usergame, card, other_player):
+    def check_hazards(self, card, other_player):
         if card.action == "out of gas":
             if other_player.can_have_low_gas == 1 and str(other_player.immunities)[0] != "3":
                 return card
@@ -142,69 +142,67 @@ class Usergame(Base):
             else:
                 return None
 
-
-    def check_miles(usergame, card):
-        if usergame.can_go == 1:
+    def check_miles(self, card):
+        if self.can_go == 1:
             if int(card.action) == 200:
-                if usergame.miles <= 800 and usergame.speed_limit < 50:
+                if self.miles <= 800 and self.speed_limit < 50:
                     return card
                 else:
                     return None
             elif int(card.action) == 100:
-                if usergame.miles <= 900 and usergame.speed_limit < 50:
+                if self.miles <= 900 and self.speed_limit < 50:
                     return card
                 else:
                     return None
             elif int(card.action) == 75:
-                if usergame.miles <= 925 and usergame.speed_limit < 50:
+                if self.miles <= 925 and self.speed_limit < 50:
                     return card
                 else:
                     return None
             elif int(card.action) == 50:
-                if usergame.miles <= 950:
+                if self.miles <= 950:
                     return card
                 else:
                     return None
             elif int(card.action) == 25:
-                if usergame.miles <= 975:
+                if self.miles <= 975:
                     return card
                 else:
                     return None
         else:
             return None
 
-
-    def check_remedy(usergame, card):
+    def check_remedy(self, card):
         if card.action == "gasoline":
-            if usergame.gas_empty == 1:
+            if self.gas_empty == 1:
                 return card
             else:
                 return None
         elif card.action == "spare tire":
-            if usergame.has_flat == 1:
+            if self.has_flat == 1:
                 return card
             else:
                 return None
         elif card.action == "repairs":
-            if usergame.has_accident == 1:
+            if self.has_accident == 1:
                 return card
             else:
                 return None
         elif card.action == "end of limit":
-            if usergame.speed_limit == 50:
+            if self.speed_limit == 50:
                 return card
         elif card.action == "roll":
-            if usergame.can_go == 0:
-                if usergame.gas_empty == 0 and usergame.has_flat == 0 and usergame.has_accident == 0:
+            if self.can_go == 0:
+                if self.gas_empty == 0 and self.has_flat == 0 and self.has_accident == 0:
                     return card
             else:
                 return None
 
-    def update_turns(usergame, other_player):
-        usergame.position = 2
+    def update_turns(self, other_player):
+        self.position = 2
         other_player.position = 1
 
-    def stop_everything(usergame, other_player):
+    def stop_everything(self, other_player):
         other_player.can_be_stopped = 0
         other_player.can_have_flat = 0
         other_player.can_have_low_gas = 0
@@ -212,13 +210,13 @@ class Usergame(Base):
         other_player.can_be_in_accident = 0
         other_player.can_go = 0
 
-    def start_everything(usergame):
-        usergame.can_be_stopped = 1
-        usergame.can_have_flat = 1
-        usergame.can_have_low_gas = 1
-        usergame.can_have_speed_limit = 1
-        usergame.can_be_in_accident = 1
-        usergame.can_go = 1
+    def start_everything(self):
+        self.can_be_stopped = 1
+        self.can_have_flat = 1
+        self.can_have_low_gas = 1
+        self.can_have_speed_limit = 1
+        self.can_be_in_accident = 1
+        self.can_go = 1
 
     game = relationship("Game", backref=backref("games", order_by=id))
     player = relationship("Player", backref=backref("players", order_by=id))
