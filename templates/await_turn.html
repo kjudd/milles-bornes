@@ -41,6 +41,7 @@
     channel.bind('an_event', function(data) {
         $("#played").show();
         $("#card").html(data['played']);
+        window.scrollTo(0, 0);
     });
     channel.bind('winner', function(data) {
         $("#lost").show();
