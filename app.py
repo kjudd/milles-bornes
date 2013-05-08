@@ -336,7 +336,7 @@ def discard(id):
         model.session.commit()
         return redirect("/turn")
     else:
-        return redirect("/gameplay")
+        return redirect("/turn")
 
 
 #View to evaluate players selected card and update database with new move.
@@ -424,7 +424,7 @@ def play_card(id):
         model.session.commit()
         return redirect("/turn")
     else:
-        return redirect("/gameplay")
+        return redirect("/turn")
 
 
 
