@@ -180,6 +180,8 @@ def await_turn():
     channel = str(game)
     usergame = model.session.query(model.Usergame).filter(and_(model.Usergame.user_id == player, model.Usergame.game_id == game)).all()
     usergame = usergame[0]
+    if usergame.position == 1:
+        return redirect("/turn")
     other_players = model.session.query(model.Usergame).filter(and_(model.Usergame.game_id == game, model.Usergame.position != usergame.position)).all()
     other_player = other_players[0]
     draw_pile = usergame.game.draw_pile
@@ -219,6 +221,8 @@ def gameplay():
     game = session.get("game")
     usergame = model.session.query(model.Usergame).filter(and_(model.Usergame.user_id == player, model.Usergame.game_id == game)).all()
     usergame = usergame[0]
+    if usergame.position != 1:
+        return redirect("/turn")
     other_players = model.session.query(model.Usergame).filter(and_(model.Usergame.game_id == game, model.Usergame.position != usergame.position)).all()
     if usergame.miles == 1000:
         return redirect("/winner")
@@ -274,7 +278,7 @@ def draw():
     usergame = usergame[0]
     game_object = model.session.query(model.Game).get(game)
     draw_pile = game_object.draw_pile
-    if len(draw_pile) == 90:
+    if len(draw_pile) == 0:
         p[str(game)].trigger('tied', {})
     string_draw = str(draw_pile)
     deal_cards = string_draw.split(',')
