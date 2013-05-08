@@ -183,16 +183,14 @@ def await_turn():
     if usergame.position == 1:
         return redirect("/turn")
     other_players = model.session.query(model.Usergame).filter(and_(model.Usergame.game_id == game, model.Usergame.position != usergame.position)).all()
-    other_player = other_players[0]
     draw_pile = usergame.game.draw_pile
     if usergame.miles >= 1000:
+        usergame.status = 1
         return redirect("/winner")
     elif other_players[0].miles == 1000:
         return redirect("/loser")
     draw_pile = usergame.game.draw_pile
     if len(draw_pile) == 0:
-        usergame.game_status += 2
-        other_player.game_status += 2
         return redirect("/tie_game")
     dealt_cards = usergame.hand
     dealt_tuple = str(dealt_cards)
@@ -276,9 +274,12 @@ def draw():
     game = session.get("game")
     usergame = model.session.query(model.Usergame).filter_by(user_id=player, game_id=game).all()
     usergame = usergame[0]
+    other_players = model.session.query(model.Usergame).filter(and_(model.Usergame.game_id == game, model.Usergame.position != usergame.position)).all()
     game_object = model.session.query(model.Game).get(game)
     draw_pile = game_object.draw_pile
     if len(draw_pile) == 0:
+        usergame.game_status = 2
+        other_players[0].game_status = 2
         p[str(game)].trigger('tied', {})
     string_draw = str(draw_pile)
     deal_cards = string_draw.split(',')
@@ -373,9 +374,9 @@ def play_card(id):
             usergame.miles += integer
             model.session.commit()
             if usergame.miles == 1000:
+                usergame.game_status = 1
+                other_player.game_status = 3
                 p[str_game].trigger('winner', {})
-                usergame.game_status += 1
-                other_player.game_status += 3
                 return redirect("/winner")
             else:
                 p[str_game].trigger('an_event', {"played": card.action})
@@ -441,6 +442,14 @@ def winner():
 @app.route("/loser")
 def loser():
     endgame_text = "Sorry, your opponent won. Try again!"
+    player_id = current_user.id
+    game = session.get("game")
+    usergame = model.session.query(model.Usergame).filter_by(user_id=player_id, game_id=game).all()
+    usergame = usergame[0]
+    other_players = model.session.query(model.Usergame).filter(and_(model.Usergame.game_id == game, model.Usergame.position != usergame.position)).all()
+    other_player = other_players[0]
+    other_player.game_status = 1
+    usergame.game_status = 3
     return render_template("endgame.html", endgame_text=endgame_text)
 
 
