@@ -278,8 +278,8 @@ def draw():
     game_object = model.session.query(model.Game).get(game)
     draw_pile = game_object.draw_pile
     if len(draw_pile) == 0:
-        usergame.game_status = 2
-        other_players[0].game_status = 2
+        usergame.game_status += 2
+        other_players[0].game_status += 2
         p[str(game)].trigger('tied', {})
         return("/tie_game")
     string_draw = str(draw_pile)
@@ -334,7 +334,7 @@ def discard(id):
         if int(card) == id:
             validate_hand = True
             hand.remove(card)
-    if validate_hand == True:
+    if validate_hand is True:
         new_hand = ','.join(hand)
         usergame.hand = new_hand
         usergame.position = 2
@@ -368,15 +368,14 @@ def play_card(id):
             new_hand = ','.join(split_hand)
             usergame.hand = new_hand
             validate_hand = True
-
-    if validate_hand == True:
+    if validate_hand is True:
         if card.type == "miles":
             integer = int(card.action)
             usergame.miles += integer
             model.session.commit()
             if usergame.miles == 1000:
-                usergame.game_status = 1
-                other_player.game_status = 3
+                usergame.game_status += 1
+                other_player.game_status += 3
                 p[str_game].trigger('winner', {})
                 return redirect("/winner")
             else:
@@ -433,7 +432,6 @@ def play_card(id):
         return redirect("/turn")
 
 
-
 @app.route("/winner")
 def winner():
     endgame_text = "You won! Great job!"
@@ -442,15 +440,15 @@ def winner():
 
 @app.route("/loser")
 def loser():
-    endgame_text = "Sorry, your opponent won. Try again!"
     player_id = current_user.id
     game = session.get("game")
     usergame = model.session.query(model.Usergame).filter_by(user_id=player_id, game_id=game).all()
     usergame = usergame[0]
     other_players = model.session.query(model.Usergame).filter(and_(model.Usergame.game_id == game, model.Usergame.position != usergame.position)).all()
     other_player = other_players[0]
-    other_player.game_status = 1
-    usergame.game_status = 3
+    other_player.game_status += 1
+    usergame.game_status += 3
+    endgame_text = "Sorry, your opponent won. Try again!"
     return render_template("endgame.html", endgame_text=endgame_text)
 
 
