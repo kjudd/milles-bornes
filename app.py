@@ -8,6 +8,7 @@ from flask_login import login_user, logout_user, current_user, login_required
 import bcrypt
 import pusher
 
+
 app = Flask(__name__)
 
 #Set up config for WTForms CSRF.
@@ -349,71 +350,77 @@ def play_card(id):
     split_hand = string_hand.split(',')
     card = model.session.query(model.Card).get(id)
     str_game = str(game)
+    validate_hand = False
     for i in split_hand:
         if int(i) == id:
             split_hand.remove(i)
-    new_hand = ','.join(split_hand)
-    usergame.hand = new_hand
+            new_hand = ','.join(split_hand)
+            usergame.hand = new_hand
+            validate_hand = True
 
-    if card.type == "miles":
-        integer = int(card.action)
-        usergame.miles += integer
-        model.session.commit()
-        if usergame.miles == 1000:
-            p[str_game].trigger('winner', {})
-            usergame.game_status += 1
-            other_player.game_status += 3
-            return redirect("/winner")
-        else:
-            p[str_game].trigger('an_event', {"played": card.action})
-            model.Usergame.update_turns(usergame, other_player)
+    if validate_hand == True:
+        if card.type == "miles":
+            integer = int(card.action)
+            usergame.miles += integer
             model.session.commit()
-            return redirect("/turn")
-    elif card.type == "safety":
-        if card.action == "extra tank":
-            usergame.gas_empty = 0
-            usergame.immunities += 1000
-        if card.action == "puncture proof":
-            usergame.has_flat = 0
-            usergame.immunities += 100
-        if card.action == "driving ace":
-            usergame.has_accident = 0
-            usergame.immunities += 10
-        if card.action == "right of way":
-            usergame.speed_limit = 0
-            model.Usergame.start_everything(usergame)
-            usergame.immunities += 1
-        #extra turn, no update
-    elif card.type == "hazard":
-        if card.action == "out of gas":
-            model.Usergame.stop_everything(usergame, other_player)
-            other_player.gas_empty = 1
-        if card.action == "flat tire":
-            model.Usergame.stop_everything(usergame, other_player)
-            other_player.has_flat = 1
-        if card.action == "accident":
-            model.Usergame.stop_everything(usergame, other_player)
-            other_player.has_accident = 1
-        if card.action == "stop":
-            model.Usergame.stop_everything(usergame, other_player)
-        if card.action == "speed limit":
-            other_player.speed_limit = 50
-        model.Usergame.update_turns(usergame, other_player)
-    elif card.type == "remedy":
-        if card.action == "roll":
-            model.Usergame.start_everything(usergame)
-        if card.action == "gasoline":
-            usergame.gas_empty = 0
-        if card.action == "spare tire":
-            usergame.has_flat = 0
-        if card.action == "repairs":
-            usergame.has_accident = 0
-        if card.action == "end of limit":
-            usergame.speed_limit = 0
-        model.Usergame.update_turns(usergame, other_player)
-    p[str_game].trigger('an_event', {"played": card.action})
-    model.session.commit()
-    return redirect("/turn")
+            if usergame.miles == 1000:
+                p[str_game].trigger('winner', {})
+                usergame.game_status += 1
+                other_player.game_status += 3
+                return redirect("/winner")
+            else:
+                p[str_game].trigger('an_event', {"played": card.action})
+                model.Usergame.update_turns(usergame, other_player)
+                model.session.commit()
+                return redirect("/turn")
+        elif card.type == "safety":
+            if card.action == "extra tank":
+                usergame.gas_empty = 0
+                usergame.immunities += 1000
+            if card.action == "puncture proof":
+                usergame.has_flat = 0
+                usergame.immunities += 100
+            if card.action == "driving ace":
+                usergame.has_accident = 0
+                usergame.immunities += 10
+            if card.action == "right of way":
+                usergame.speed_limit = 0
+                model.Usergame.start_everything(usergame)
+                usergame.immunities += 1
+            #extra turn, no update
+        elif card.type == "hazard":
+            if card.action == "out of gas":
+                model.Usergame.stop_everything(usergame, other_player)
+                other_player.gas_empty = 1
+            if card.action == "flat tire":
+                model.Usergame.stop_everything(usergame, other_player)
+                other_player.has_flat = 1
+            if card.action == "accident":
+                model.Usergame.stop_everything(usergame, other_player)
+                other_player.has_accident = 1
+            if card.action == "stop":
+                model.Usergame.stop_everything(usergame, other_player)
+            if card.action == "speed limit":
+                other_player.speed_limit = 50
+            model.Usergame.update_turns(usergame, other_player)
+        elif card.type == "remedy":
+            if card.action == "roll":
+                model.Usergame.start_everything(usergame)
+            if card.action == "gasoline":
+                usergame.gas_empty = 0
+            if card.action == "spare tire":
+                usergame.has_flat = 0
+            if card.action == "repairs":
+                usergame.has_accident = 0
+            if card.action == "end of limit":
+                usergame.speed_limit = 0
+            model.Usergame.update_turns(usergame, other_player)
+        p[str_game].trigger('an_event', {"played": card.action})
+        model.session.commit()
+        return redirect("/turn")
+    else:
+        return redirect("/gameplay")
+
 
 
 @app.route("/winner")
