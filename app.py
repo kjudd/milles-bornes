@@ -281,6 +281,7 @@ def draw():
         usergame.game_status = 2
         other_players[0].game_status = 2
         p[str(game)].trigger('tied', {})
+        return("/tie_game")
     string_draw = str(draw_pile)
     deal_cards = string_draw.split(',')
     dealt_cards = deal_cards[-1]
@@ -442,14 +443,6 @@ def winner():
 @app.route("/loser")
 def loser():
     endgame_text = "Sorry, your opponent won. Try again!"
-    player_id = current_user.id
-    game = session.get("game")
-    usergame = model.session.query(model.Usergame).filter_by(user_id=player_id, game_id=game).all()
-    usergame = usergame[0]
-    other_players = model.session.query(model.Usergame).filter(and_(model.Usergame.game_id == game, model.Usergame.position != usergame.position)).all()
-    other_player = other_players[0]
-    other_player.game_status = 1
-    usergame.game_status = 3
     return render_template("endgame.html", endgame_text=endgame_text)
 
 
