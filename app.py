@@ -323,15 +323,18 @@ def discard(id):
     hand = usergame.hand
     hand = str(hand)
     hand = hand.split(',')
+    validate_hand = False
     for card in hand:
         if int(card) == id:
+            validate_hand = True
             hand.remove(card)
-    new_hand = ','.join(hand)
-    usergame.hand = new_hand
-    usergame.position = 2
-    other_player.position = 1
-    model.session.commit()
-    return redirect("/turn")
+    if validate_hand == True
+        new_hand = ','.join(hand)
+        usergame.hand = new_hand
+        usergame.position = 2
+        other_player.position = 1
+        model.session.commit()
+        return redirect("/turn")
 
 
 #View to evaluate players selected card and update database with new move.
