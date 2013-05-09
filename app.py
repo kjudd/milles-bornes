@@ -448,8 +448,8 @@ def loser():
     usergame = model.session.query(model.Usergame).filter_by(user_id=player, game_id=game).all()
     usergame = usergame[0]
     other_players = model.session.query(model.Usergame).filter(and_(model.Usergame.game_id == game, model.Usergame.position != usergame.position)).all()
-    usergame.game_status = 1
-    other_players[0].game_status = 3
+    usergame.game_status = 3
+    other_players[0].game_status = 1
     model.session.commit()
     return render_template("endgame.html", endgame_text=endgame_text)
 
