@@ -278,8 +278,9 @@ def draw():
     game_object = model.session.query(model.Game).get(game)
     draw_pile = game_object.draw_pile
     if len(draw_pile) == 0:
-        usergame.game_status += 2
-        other_players[0].game_status += 2
+        usergame.game_status = 2
+        other_players[0].game_status = 2
+        model.session.commit()
         p[str(game)].trigger('tied', {})
         return("/tie_game")
     string_draw = str(draw_pile)
@@ -374,8 +375,9 @@ def play_card(id):
             usergame.miles += integer
             model.session.commit()
             if usergame.miles == 1000:
-                usergame.game_status += 1
-                other_player.game_status += 3
+                usergame.game_status = 1
+                other_player.game_status = 3
+                model.session.commit()
                 p[str_game].trigger('winner', {})
                 return redirect("/winner")
             else:
@@ -441,6 +443,14 @@ def winner():
 @app.route("/loser")
 def loser():
     endgame_text = "Sorry, your opponent won. Try again!"
+    player = current_user.id
+    game = session.get("game")
+    usergame = model.session.query(model.Usergame).filter_by(user_id=player, game_id=game).all()
+    usergame = usergame[0]
+    other_players = model.session.query(model.Usergame).filter(and_(model.Usergame.game_id == game, model.Usergame.position != usergame.position)).all()
+    usergame.game_status = 1
+    other_players[0].game_status = 3
+    model.session.commit()
     return render_template("endgame.html", endgame_text=endgame_text)
 
 
