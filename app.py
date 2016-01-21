@@ -31,7 +31,7 @@ def load_user(id):
 @app.route("/", methods=["POST", "GET"])
 def login():
     #If user is already in session, redirect to choose game.
-    if current_user is not None and current_user.is_authenticated():
+    if current_user and current_user.is_authenticated:
         return redirect("/choose_game")
 
     #Sign up view to add player id, name, email, and hashed password to database.
